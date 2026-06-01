@@ -1,9 +1,9 @@
-// Firebase SDK'larını içe aktarıyoruz
+// GitHub Pages uyumlu güncel Firebase 10.x SDK'ları
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// Görseldeki Firebase Yapılandırma Bilgilerin
+// Senin Firebase Bilgilerin
 const firebaseConfig = {
     apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcolvpqDTBvWuSdrk",
     authDomain: "imanpowerveri.firebaseapp.com",
@@ -15,12 +15,12 @@ const firebaseConfig = {
     measurementId: "G-4T6XSDBDL5"
 };
 
-// Firebase'i başlat
+// Sistemleri Başlat
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-// HTML Elemanları
+// HTML Arayüz Elemanları
 const authContainer = document.getElementById("auth-container");
 const chatContainer = document.getElementById("chat-container");
 const emailInput = document.getElementById("email");
@@ -31,7 +31,7 @@ const userDisplay = document.getElementById("user-display");
 
 let currentUser = null;
 
-// --- YAPAY ZEKA TÜRKÇE DİL VE KELİME HAVUZU ---
+// --- TÜRKÇE DİL VE KELİME VERİ HAVUZU ---
 const turkceYapayZekaCevaplari = {
     "merhaba": "Merhaba! Ben İmanPower Yapay Zeka. Size nasıl yardımcı olabilirim?",
     "selam": "Selam! Harika bir gün geçirdiğini umuyorum. Ne hakkında konuşalım?",
@@ -41,10 +41,9 @@ const turkceYapayZekaCevaplari = {
     "varsayılan": "Bu kelimeyi henüz tam olarak öğrenemedim ama Türkçe dil bilgisi havuzuma eklemek için not alıyorum!"
 };
 
+// Mesajı analiz edip cevap üreten fonksiyon
 function yapayZekaCevapVer(mesaj) {
     const temizMesaj = mesaj.toLowerCase().trim();
-    
-    // Kelime havuzunda kontrol et
     for (let anahtar in turkceYapayZekaCevaplari) {
         if (temizMesaj.includes(anahtar)) {
             return turkceYapayZekaCevaplari[anahtar];
@@ -53,18 +52,22 @@ function yapayZekaCevapVer(mesaj) {
     return turkceYapayZekaCevaplari["varsayılan"];
 }
 
-// --- KULLANICI GİRİŞ / KAYIT SİSTEMİ ---
+// --- KAYIT VE GİRİŞ SİSTEMİ OYNAYIŞI ---
 document.getElementById("btn-register").addEventListener("click", () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if(email === "" || password === "") return alert("Lütfen alanları doldurun!");
+
     createUserWithEmailAndPassword(auth, email, password)
-        .then(() => alert("Kayıt başarıyla tamamlandı!"))
-        .catch(error => alert("Hata: " + error.message));
+        .then(() => alert("Kayıt başarıyla tamamlandı! Giriş yapılıyor..."))
+        .catch(error => alert("Kayıt Hatası: " + error.message));
 });
 
 document.getElementById("btn-login").addEventListener("click", () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if(email === "" || password === "") return alert("Lütfen alanları doldurun!");
+
     signInWithEmailAndPassword(auth, email, password)
         .catch(error => alert("Giriş Hatası: " + error.message));
 });
@@ -73,7 +76,7 @@ document.getElementById("btn-logout").addEventListener("click", () => {
     signOut(auth);
 });
 
-// Oturum Durumu Kontrolü (Giriş yapıldıysa sohbeti aç, eski mesajları çek)
+// Oturum kontrolü (Giriş yapıldığında tetiklenir)
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
@@ -89,24 +92,25 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- SOHBET VE VERİTABANI İŞLEMLERİ ---
+// --- VERİTABANI SOHBET İŞLEMLERİ ---
 document.getElementById("btn-send").addEventListener("click", mesajGonder);
+chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") mesajGonder(); });
 
 function mesajGonder() {
     const mesajMetni = chatInput.value.trim();
     if (mesajMetni === "" || !currentUser) return;
 
     const chatRef = ref(database, 'sohbetler/' + currentUser.uid);
-    const yeniMesajRef = push(chatRef);
 
-    // Kullanıcı mesajı
+    // 1. Kullanıcının attığı mesajı kaydet
+    const yeniMesajRef = push(chatRef);
     set(yeniMesajRef, {
         gonderen: "kullanici",
         mesaj: mesajMetni,
         zaman: Date.now()
     });
 
-    // Yapay Zeka Cevabı
+    // 2. Yapay zekanın cevabını belirle ve kaydet
     const botCevabi = yapayZekaCevapVer(mesajMetni);
     const yeniBotMesajRef = push(chatRef);
     set(yeniBotMesajRef, {
@@ -118,6 +122,7 @@ function mesajGonder() {
     chatInput.value = "";
 }
 
+// Eski mesajları Firebase'den canlı olarak çeken fonksiyon
 function eskiSohbetleriYukle(uid) {
     const chatRef = ref(database, 'sohbetler/' + uid);
     onValue(chatRef, (snapshot) => {
@@ -127,10 +132,10 @@ function eskiSohbetleriYukle(uid) {
             Object.values(veriler).forEach(veri => {
                 const mesajElement = document.createElement("div");
                 mesajElement.classList.add("mesaj", veri.gonderen);
-                mesajElement.innerText = (veri.gonderen === "kullanici" ? "Siz: " : "AI: ") + veri.mesaj;
+                mesajElement.innerText = (veri.gonderen === "kullanici" ? "Siz: " : "Yapay Zeka: ") + veri.mesaj;
                 chatBox.appendChild(mesajElement);
             });
-            chatBox.scrollTop = chatBox.scrollHeight; // Ekranı aşağı kaydır
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     });
 }
