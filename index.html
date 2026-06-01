@@ -1,37 +1,192 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İmanPower Yapay Zeka</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İman Power Zeka</title>
+
+<style>
+body{
+    font-family: Arial,sans-serif;
+    background:#0f172a;
+    color:white;
+    margin:0;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+input,button{
+    width:100%;
+    padding:12px;
+    margin:5px 0;
+    border:none;
+    border-radius:8px;
+}
+
+button{
+    background:#22c55e;
+    color:white;
+    cursor:pointer;
+}
+
+#chat{
+    display:none;
+}
+
+#messages{
+    height:400px;
+    overflow-y:auto;
+    background:#1e293b;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.msg{
+    margin:8px 0;
+    padding:10px;
+    border-radius:8px;
+}
+
+.user{
+    background:#2563eb;
+}
+
+.bot{
+    background:#334155;
+}
+</style>
 </head>
 <body>
 
-    <div id="auth-container" class="container">
-        <h2>İmanPower Yapay Zeka - Giriş</h2>
-        <input type="email" id="email" placeholder="E-posta Adresiniz">
-        <input type="password" id="password" placeholder="Şifreniz">
-        <div class="auth-buttons">
-            <button id="btn-login">Giriş Yap</button>
-            <button id="btn-register">Kayıt Ol</button>
-        </div>
-    </div>
+<div class="container">
 
-    <div id="chat-container" class="container hidden">
-        <div class="chat-header">
-            <h3>Hoş geldin, <span id="user-display">Kullanıcı</span></h3>
-            <button id="btn-logout">Çıkış Yap</button>
-        </div>
-        
-        <div id="chat-box" class="chat-box"></div>
+<h1>🤖 İman Power Zeka</h1>
 
-        <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Bir şeyler yazın...">
-            <button id="btn-send">Gönder</button>
-        </div>
-    </div>
+<div id="auth">
 
-    <script type="module" src="app.js"></script>
+<input type="email" id="email" placeholder="E-posta">
+<input type="password" id="password" placeholder="Şifre">
+
+<button onclick="register()">Kayıt Ol</button>
+<button onclick="login()">Giriş Yap</button>
+
+</div>
+
+<div id="chat">
+
+<h2>Sohbet</h2>
+
+<div id="messages"></div>
+
+<input type="text" id="messageInput" placeholder="Mesaj yaz...">
+
+<button onclick="sendMessage()">Gönder</button>
+
+<button onclick="logout()">Çıkış Yap</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+  apiKey: "BURAYA_APIKEY",
+  authDomain: "BURAYA_AUTHDOMAIN",
+  projectId: "BURAYA_PROJECTID",
+
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.register = async () => {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try{
+        await createUserWithEmailAndPassword(auth,email,password);
+        alert("Kayıt başarılı");
+    }catch(err){
+        alert(err.message);
+    }
+};
+
+window.login = async () => {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try{
+        await signInWithEmailAndPassword(auth,email,password);
+
+        document.getElementById("auth").style.display="none";
+        document.getElementById("chat").style.display="block";
+
+    }catch(err){
+        alert(err.message);
+    }
+};
+
+window.logout = async () => {
+
+    await signOut(auth);
+
+    document.getElementById("auth").style.display="block";
+    document.getElementById("chat").style.display="none";
+};
+
+window.sendMessage = async () => {
+
+    const input = document.getElementById("messageInput");
+
+    const text = input.value.trim();
+
+    if(!text) return;
+
+    addMessage(text,"user");
+
+    input.value="";
+
+    // Şimdilik örnek cevap
+    setTimeout(() => {
+
+        addMessage(
+            "Merhaba, ben İman Power Zeka. Gerçek AI API bağlanınca daha gelişmiş cevap vereceğim.",
+            "bot"
+        );
+
+    },500);
+};
+
+function addMessage(text,type){
+
+    const div=document.createElement("div");
+
+    div.className="msg "+type;
+
+    div.textContent=text;
+
+    document.getElementById("messages").appendChild(div);
+}
+
+</script>
+
 </body>
 </html>
