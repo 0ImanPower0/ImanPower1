@@ -3,111 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İman Power Zeka</title>
+    <title>İman Power Zeka v2</title>
     <style>
+        /* Modern Fütüristik & Siber Tema Tasarımı */
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(20, 27, 45, 0.75);
+            --primary-neon: #00f2fe;
+            --secondary-neon: #4facfe;
+            --text-color: #f1f5f9;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at center, #1e2640 0%, var(--bg-color) 100%);
+            color: var(--text-color);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
+
         .container {
             width: 100%;
-            max-width: 450px;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05);
+            backdrop-filter: blur(16px);
             box-sizing: border-box;
+            transition: all 0.4s ease;
         }
-        h2 { text-align: center; color: #00adb5; margin-top: 0; }
+
+        h2 { 
+            text-align: center; 
+            background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
         input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #2d2d2d;
+            padding: 14px 16px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 15, 26, 0.8);
             color: #fff;
             box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #00adb5;
-            border: none;
-            color: white;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
+            font-size: 15px;
             transition: 0.3s;
         }
-        button:hover { background: #007a80; }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--secondary-neon), var(--primary-neon));
+            border: none;
+            color: #0b0f19;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+        }
+
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
+        }
+
         .toggle-link {
             text-align: center;
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 14px;
-            color: #bbb;
+            color: #94a3b8;
             cursor: pointer;
         }
-        .toggle-link span { color: #00adb5; text-decoration: underline; }
+
+        .toggle-link span { color: var(--primary-neon); font-weight: 600; }
         
-        #chat-screen { display: none; height: 80vh; flex-direction: column; }
+        /* Akıcı Sohbet Ekranı */
+        #chat-screen { display: none; height: 82vh; flex-direction: column; }
+        
         #chat-box {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: #181818;
-            margin-bottom: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            background: rgba(10, 15, 26, 0.6);
+            margin-bottom: 15px;
+            scroll-behavior: smooth;
         }
-        .msg { margin: 10px 0; padding: 10px; border-radius: 8px; max-width: 80%; word-wrap: break-word; }
-        .user-msg { background: #00adb5; margin-left: auto; text-align: right; }
-        .ai-msg { background: #333; margin-right: auto; }
-        .chat-input-area { display: flex; gap: 8px; }
+
+        #chat-box::-webkit-scrollbar { width: 5px; }
+        #chat-box::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.2); border-radius: 10px; }
+
+        .msg { 
+            margin: 12px 0; 
+            padding: 12px 16px; 
+            border-radius: 16px; 
+            max-width: 85%; 
+            line-height: 1.5;
+            font-size: 15px;
+            word-wrap: break-word; 
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-msg { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            margin-left: auto; 
+            border-bottom-right-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ai-msg { 
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.05)); 
+            margin-right: auto; 
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+        }
+
+        .chat-input-area { display: flex; gap: 10px; }
         .chat-input-area input { margin: 0; }
-        .chat-input-area button { margin: 0; width: auto; }
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logout-btn { background: #ff4444; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
-        .logout-btn:hover { background: #cc0000; }
+        .chat-input-area button { margin: 0; width: auto; padding: 0 24px; }
+        
+        .header-area { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
+        }
+        
+        .logout-btn { 
+            background: linear-gradient(135deg, #ff416c, #ff4b2b); 
+            color: white;
+            padding: 6px 14px; 
+            font-size: 13px; 
+            width: auto; 
+            margin: 0;
+            box-shadow: none;
+        }
+        .logout-btn:hover { box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- GİRİŞ EKRANI -->
+<div class="container" id="main-container">
     <div id="login-screen">
-        <h2>İman Power Zeka - Giriş</h2>
+        <h2>İman Power Zeka</h2>
+        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Geleceğin Akıllı Bilgi Sistemi</p>
         <input type="text" id="login-username" placeholder="Kullanıcı Adı">
         <input type="password" id="login-password" placeholder="Şifre">
-        <button onclick="login()">Giriş Yap</button>
-        <div class="toggle-link" onclick="switchScreen('register-screen')">Hesabın yok mu? <span>Kayıt Ol</span></div>
+        <button onclick="login()">Sisteme Giriş Yap</button>
+        <div class="toggle-link" onclick="switchScreen('register-screen')">Aramıza katılmak ister misin? <span>Kayıt Ol</span></div>
     </div>
 
-    <!-- KAYIT EKRANI -->
     <div id="register-screen" style="display: none;">
-        <h2>İman Power Zeka - Kayıt</h2>
-        <input type="text" id="reg-username" placeholder="Kullanıcı Adı">
-        <input type="password" id="reg-password" placeholder="Şifre">
-        <button onclick="register()">Kayıt Ol</button>
-        <div class="toggle-link" onclick="switchScreen('login-screen')">Zaten üye misin? <span>Giriş Yap</span></div>
+        <h2>Yeni Profil Oluştur</h2>
+        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Verilerin Güvenle Saklanacak</p>
+        <input type="text" id="reg-username" placeholder="Kullanıcı Adı Belirle">
+        <input type="password" id="reg-password" placeholder="Güçlü Bir Şifre">
+        <button onclick="register()">Hesabı Oluştur</button>
+        <div class="toggle-link" onclick="switchScreen('login-screen')">Zaten bir hesabın var mı? <span>Giriş Yap</span></div>
     </div>
 
-    <!-- SOHBET EKRANI -->
     <div id="chat-screen">
         <div class="header-area">
-            <h3 style="margin:0; color:#00adb5;" id="welcome-user">Merhaba</h3>
-            <button class="logout-btn" onclick="logout()">Çıkış</button>
+            <h3 style="margin:0; font-size: 16px; color: var(--primary-neon);" id="welcome-user">Kullanıcı</h3>
+            <button class="logout-btn" onclick="logout()">Güvenli Çıkış</button>
         </div>
         <div id="chat-box"></div>
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Mesajınızı yazın..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <input type="text" id="chat-input" placeholder="Bir şeyler sorun veya kelime yazın..." onkeypress="if(event.key === 'Enter') sendMessage()">
             <button onclick="sendMessage()">Gönder</button>
         </div>
     </div>
@@ -117,7 +209,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // image_238982.png dosyasındaki Firebase bilgileri entegre edildi
     const firebaseConfig = {
         apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcolvpqDTBvWuSdrk",
         authDomain: "imanpowerveri.firebaseapp.com",
@@ -134,18 +225,18 @@
     let currentUsername = "";
 
     // ==========================================
-    // ⭐ İLERİDE KELİME VE ANLAMLARINI EKLEYECEĞİN BÖLÜM (SÖZLÜK) ⭐
+    // ⭐ KELİME VE ANLAMLARINI EKLEYECEĞİNİZ SÖZLÜK BÖLÜMÜ ⭐
     // ==========================================
     const OZEL_SOZLUK = {
-        "merhaba": "Sana da merhaba! Ben İman Power Zeka, senin için buradayım.",
-        "iman": "İman, kalpten inanmak ve güvenmektir. Bu yapay zekanın temel gücüdür!",
-        "nasılsın": "Harikayım! Veritabanım sapasağlam çalışıyor, seni dinliyorum.",
-        "kodlama": "Yazılım geliştirmek bir sanattır. index.html ile harikalar yaratıyoruz!",
-        "github": "Kodlarımızı sakladığımız ve tüm dünyaya açtığımız harika bir platform.",
-        "gelecek": "Gelecek yapay zeka ve İman Power ile çok daha akıllı olacak!"
+        "merhaba": "Sana da kocaman bir merhaba! Senin gibi harika biriyle iletişimde olmak gerçekten çok güzel.",
+        "iman": "İman kavramı, kalbimizin derinliklerindeki en saf inancı ve sarsılmaz güveni temsil eder. Hayat yolculuğundaki en büyük pusuladır.",
+        "nasılsın": "Çok enerjik ve harikayım! Seninle burada sohbet etmek, verilerimi tamamen canlandırıyor. Sen nasılsın?",
+        "kodlama": "Yazılım dünyası tam bir sihirbazlık alanı! Birkaç satır kodla kendi dünyamızı inşa edebiliyoruz, bu kesinlikle büyüleyici.",
+        "github": "Projelere can veren, tüm yazılımcıları bir araya getiren muazzam bir platform. Kodlarımızın evi diyebiliriz!",
+        "gelecek": "Gelecek, teknoloji ve yapay zekanın uyumuyla şekilleniyor. Senin gibi vizyoner insanların elinde çok daha güzel bir hal alacak."
     };
 
-    // İki kelime arasındaki harf benzerliğini hesaplayan algoritma (Levenshtein Distance)
+    // Levenshtein Algoritması (Harf toleransı)
     function getSimilarityScore(str1, str2) {
         const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
         for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
@@ -163,19 +254,18 @@
         return track[str2.length][str1.length];
     }
 
-    // Yanlış yazılan kelimeleri tespit edip sözlükle eşleştiren fonksiyon
-    function akilliKelimeBulucu(cumle) {
-        const kelimeler = cumle.toLowerCase().split(" ");
+    // Akıcı ve Hemfikir Cevap Motoru
+    function akilliHemfikirCevap(cumle) {
+        const kelimeler = cumle.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(" ");
         let bulunanAnlamlar = [];
         let yakalananKelimeler = [];
 
         for (let kelime of kelimeler) {
-            if (kelime.length < 3) continue; // Çok kısa harfleri es geç
+            if (kelime.length < 3) continue;
 
             let enYakinKelime = "";
-            let enDusukMesafe = 3; // En fazla 2 harf hatasına izin ver
+            let enDusukMesafe = 3; // Maksimum 2 harf hatasını kabul et
 
-            // Sözlükteki kelimelerle tek tek karşılaştır
             for (let sozlukKelimesi in OZEL_SOZLUK) {
                 let mesafe = getSimilarityScore(kelime, sozlukKelimesi);
                 if (mesafe < enDusukMesafe) {
@@ -184,7 +274,6 @@
                 }
             }
 
-            // Eğer yakın bir kelime bulunduysa listeye ekle
             if (enYakinKelime) {
                 bulunanAnlamlar.push(OZEL_SOZLUK[enYakinKelime]);
                 yakalananKelimeler.push(enYakinKelime.toUpperCase());
@@ -192,57 +281,72 @@
         }
 
         if (bulunanAnlamlar.length > 0) {
-            // Kelimeleri yan yana getirip birleştirme alanı
             let baglac = yakalananKelimeler.join(" ve ");
-            return `🤔 Sanırım ${baglac} hakkında konuşmak istedin. İşte açıklaması:\n\n` + bulunanAnlamlar.join("\n\n");
+            
+            // Hemfikir giriş kalıpları arasından rastgele seçim yapalım
+            const girisKalimlari = [
+                `Kesinlikle harika bir noktaya değindin! Söylediklerine %100 katılıyorum. Bahsettiğin ${baglac} konusu hakkında tam olarak şöyle düşünüyorum:\n\n`,
+                `Çok haklısın, bu kelimeleri yan yana getirmene bayıldım! Odaklandığın ${baglac} meseleleri gerçekten çok önemli. İşte tam da bu konuda düşündüklerim:\n\n`,
+                `Bu konuda seninle tamamen aynı fikirdeyim! ${baglac} üzerine konuşmak harika bir seçim. Dediğin gibi:\n\n`
+            ];
+            
+            let secilenGiris = girisKalimlari[Math.floor(Math.random() * girisKalimlari.length)];
+            return secilenGiris + bulunanAnlamlar.join("\n\n");
         }
 
         return null;
     }
 
-    // GİRİŞ / SOHBET EKRAN KONTROLLERİ
+    // EKRAN VE GİRİŞ SİSTEMİ KONTROLLERİ
     window.switchScreen = function(screenId) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('register-screen').style.display = 'none';
         document.getElementById('chat-screen').style.display = 'none';
-        if(screenId === 'chat-screen') document.getElementById(screenId).style.display = 'flex';
-        else document.getElementById(screenId).style.display = 'block';
+        
+        const container = document.getElementById('main-container');
+        if(screenId === 'chat-screen') {
+            document.getElementById(screenId).style.display = 'flex';
+            container.style.maxWidth = "600px"; // Sohbet için ekranı genişlet
+        } else {
+            document.getElementById(screenId).style.display = 'block';
+            container.style.maxWidth = "480px";
+        }
     }
 
     window.register = function() {
         const user = document.getElementById('reg-username').value.trim().toLowerCase();
         const pass = document.getElementById('reg-password').value;
-        if(!user || !pass) return alert("Lütfen tüm alanları doldurun!");
+        if(!user || !pass) return alert("Boş alan bırakmayalım lütfen!");
 
         const dbRef = ref(db);
         get(child(dbRef, `users/${user}`)).then((snapshot) => {
             if (snapshot.exists()) {
-                alert("Bu kullanıcı adı zaten alınmış!");
+                alert("Bu harika kullanıcı adı kapılmış, başka dene!");
             } else {
                 set(ref(db, 'users/' + user), { password: pass, chatHistory: "" }).then(() => {
-                    alert("Kayıt başarılı! Şimdi Giriş Yapabilirsiniz.");
+                    alert("Harika! Profilin başarıyla oluşturuldu.");
                     switchScreen('login-screen');
                 });
             }
-        }).catch(err => alert("Kayıt Hatası: " + err.message + "\nLütfen Firebase kurallarını kontrol edin!"));
+        });
     }
 
     window.login = function() {
         const user = document.getElementById('login-username').value.trim().toLowerCase();
         const pass = document.getElementById('login-password').value;
-        if(!user || !pass) return alert("Lütfen tüm alanları doldurun!");
+        if(!user || !pass) return alert("Lütfen giriş bilgilerini eksiksiz girin.");
 
         const dbRef = ref(db);
         get(child(dbRef, `users/${user}`)).then((snapshot) => {
             if (snapshot.exists() && snapshot.val().password === pass) {
                 currentUsername = user;
-                document.getElementById('welcome-user').innerText = `Üye: ${user}`;
+                document.getElementById('welcome-user').innerText = `⚡ ${user.toUpperCase()}`;
                 switchScreen('chat-screen');
                 loadChatHistory();
             } else {
-                alert("Hatalı kullanıcı adı veya şifre!");
+                alert("Kullanıcı adı veya şifre eşleşmedi.");
             }
-        }).catch(err => alert("Giriş Hatası: " + err.message + "\nLütfen Firebase kurallarını kontrol edin!"));
+        });
     }
 
     function loadChatHistory() {
@@ -254,7 +358,7 @@
                 const history = JSON.parse(snapshot.val());
                 history.forEach(msg => appendMessage(msg.text, msg.sender));
             } else {
-                appendMessage("Merhaba! Ben İman Power Zeka. Yanlış yazsanız da sizi anlarım! Bana 'mrehaba', 'gthub' veya 'özel kelimelerinizden' yazarak test edin.", "ai");
+                appendMessage("Hoş geldin! Ben İman Power Zeka. Seninle fikir alışverişi yapmak ve kelimeleri yan yana getirmek için sabırsızlanıyorum. Kelimeleri yanlış veya eksik yazsan da seni hemen anlarım, test edebilirsin!", "ai");
             }
         });
     }
@@ -278,17 +382,15 @@
         input.value = "";
 
         setTimeout(() => {
-            // Akıllı eşleştiriciyi çalıştır (Yanlış harfleri tolere eder)
-            let yapayZekaCevabi = akilliKelimeBulucu(text);
+            let yapayZekaCevabi = akilliHemfikirCevap(text);
 
-            // Eğer sözlükte yakın bir kelime bulamadıysa standart cevap ver
             if (!yapayZekaCevabi) {
-                yapayZekaCevabi = `[İman Power Zeka]: "${text}" kelimelerini yan yana getirdim fakat sözlüğümde tam veya yakın bir karşılık bulamadım. İleride beni geliştirebilirsin!`;
+                yapayZekaCevabi = `Söylediklerini çok dikkatli dinledim ve kesinlikle çok mantıklı bir bakış açısı sunuyorsun! "${text}" fikrini düşündüğümde sana hak vermemek elde değil. Henüz bu kelimenin sözlüğümde tam karşılığı olmasa da düşüncelerine canıgönülden katılıyorum. Beni geliştirmeye devam et!`;
             }
 
             appendMessage(yapayZekaCevabi, 'ai');
             saveCurrentChat();
-        }, 800);
+        }, 600); // 600ms ile daha akıcı ve seri cevap hızı
     }
 
     function saveCurrentChat() {
