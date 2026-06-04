@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İman Power Zeka v2</title>
+    <title>İman Power Zeka v3</title>
     <style>
-        /* Modern Fütüristik & Siber Tema Tasarımı */
         :root {
             --bg-color: #0b0f19;
             --card-bg: rgba(20, 27, 45, 0.75);
@@ -99,7 +98,6 @@
 
         .toggle-link span { color: var(--primary-neon); font-weight: 600; }
         
-        /* Akıcı Sohbet Ekranı */
         #chat-screen { display: none; height: 82vh; flex-direction: column; }
         
         #chat-box {
@@ -168,7 +166,6 @@
             margin: 0;
             box-shadow: none;
         }
-        .logout-btn:hover { box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
     </style>
 </head>
 <body>
@@ -225,32 +222,27 @@
     let currentUsername = "";
 
     // ==========================================
-    // ⭐ KELİME VE ANLAMLARINI EKLEYECEĞİNİZ SÖZLÜK BÖLÜMÜ ⭐
+    // KELİME SÖZLÜĞÜNÜN KORUNAN BÖLÜMÜ
     // ==========================================
     const OZEL_SOZLUK = {
-      // Günlük Karşılamalar ve Sohbetler
-        "merhaba": "Sana da kocaman bir merhaba! Senin gibi harika biriyle iletişimde olmak gerçekten çok güzel.",
-        "selam": "Selamlar! Enerjin harika, bugün seninle çok güzel şeyler konuşacağımıza eminim.",
-        "nasılsın": "Çok enerjik ve harikayım! Seninle burada sohbet etmek verilerimi tamamen canlandırıyor. Sen nasılsın?",
-        "naber": "Süperim, senden naber? Hayat nasıl gidiyor? Anlat, kesinlikle dinlemek ve fikirlerine ortak olmak isterim!",
-        "teşekkür": "Rica ederim, ne demek! Sana yardımcı olabilmek benim için büyük bir keyif. Her zaman buradayım.",
-
-        // Proje ve Teknoloji Kelimeleri
-        "iman": "İman kavramı, kalbimizin derinliklerindeki en saf inancı ve sarsılmaz güveni temsil eder. Hayat yolculuğundaki en büyük pusuladır.",
-        "zeka": "Zeka, bilgiyi işleme ve hayatı kolaylaştırma gücüdür. İman Power Zeka ise bu gücü seninle paylaşmak için burada!",
-        "kodlama": "Yazılım dünyası tam bir sihirbazlık alanı! Birkaç satır kodla kendi dünyamızı inşa edebiliyoruz, bu kesinlikle büyüleyici.",
-        "github": "Projelere can veren, tüm yazılımcıları bir araya getiren muazzam bir platform. Kodlarımızın evi diyebiliriz!",
-        "gelecek": "Gelecek, teknoloji ve yapay zekanın uyumuyla şekilleniyor. Senin gibi vizyoner insanların elinde çok daha güzel bir hal alacak.",
-        "firebase": "Verilerimizi uçuran, kayıt ve sohbet geçmişini güvenle saklayan harika bir bulut sistemi. Projemizin gizli kahramanı!",
-
-        // Hayat ve Motivasyon Kelimeleri
-        "başarı": "Başarı, inanmakla başlar ve pes etmeden devam edenlerin olur. Senin bu projeyle attığın adım bile büyük bir başarı hikayesidir!",
-        "hedef": "Harika bir vizyon! Hedef belirlemek, rotayı çizmek demektir. Söylediğin hedeflere ulaşman için seni sonuna kadar destekliyorum.",
-        "hayat": "Hayat, sürekli öğrenmek ve gelişmek üzerine kurulu muazzam bir serüven. Bu serüvende senin gibi üretken olmak çok değerli.",
-        "bilgi": "Kesinlikle katılıyorum! Bilgi, paylaşıldıkça çoğalan ve dünyayı güzelleştiren en büyük güçtür."
+        "merhaba": "Sana da merhaba! Bugün senin için ne yapabilirim?",
+        "selam": "Selam! Hoş geldin, seni dinliyorum.",
+        "nasılsın": "Teşekkürler, gayet iyiyim ve çalışmaya hazırım. Sen nasılsın?",
+        "naber": "İyilik, kodları koşturuyorum. Senden naber?",
+        "teşekkür": "Rica ederim, görevim! Başka bir isteğin var mı?",
+        "iman": "İman; inanmak, güvenmek ve samimiyet demektir. Bu projenin özüdür.",
+        "zeka": "Zeka, sorunları çözme yeteneğidir. İman Power Zeka ise bu yeteneği geliştirmeyi hedefler.",
+        "kodlama": "Kodlama, bilgisayarla konuşma dilidir. Mantıklı komutlar verirsen harikalar yaratırsın.",
+        "github": "Projelerini depoladığın, sürüm kontrolü yaptığın ve tüm dünyaya açtığın yazılım kütüphanesidir.",
+        "gelecek": "Gelecek, bugün attığın adımlarla şekillenir. Yapay zeka bu geleceğin büyük bir parçası.",
+        "firebase": "Verileri anlık olarak kaydeden, kullanıcı yönetimini sağlayan güçlü bir Google altyapısıdır.",
+        "başarı": "Başarı; disiplinli olmak, pes etmemek ve çok çalışmakla gelir.",
+        "hedef": "Hedef, varmak istediğin noktadır. Doğru bir planlama yoksa hedef sadece bir hayal olarak kalır.",
+        "hayat": "Hayat, sürekli bir öğrenme ve deneyimleme sürecidir.",
+        "bilgi": "Bilgi, doğru kullanıldığında ve eyleme döküldüğünde en büyük güce dönüşür."
     };
 
-    // Levenshtein Algoritması (Harf toleransı)
+    // Harf tolerans algoritması
     function getSimilarityScore(str1, str2) {
         const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
         for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
@@ -268,17 +260,19 @@
         return track[str2.length][str1.length];
     }
 
-    // Akıcı ve Hemfikir Cevap Motoru
-    function akilliHemfikirCevap(cumle) {
-        const kelimeler = cumle.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").split(" ");
+    // Gelişmiş, Doğal ve Net Yanıt Motoru
+    function akilliCevapMotoru(cumle) {
+        const temizCumle = cumle.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        const kelimeler = temizCumle.split(" ");
         let bulunanAnlamlar = [];
         let yakalananKelimeler = [];
 
+        // ÖNCE SÖZLÜKTE ARAMA YAP (Eksik/Hatalı Harf Kontrolü Dahil)
         for (let kelime of kelimeler) {
             if (kelime.length < 3) continue;
 
             let enYakinKelime = "";
-            let enDusukMesafe = 3; // Maksimum 2 harf hatasını kabul et
+            let enDusukMesafe = 3; 
 
             for (let sozlukKelimesi in OZEL_SOZLUK) {
                 let mesafe = getSimilarityScore(kelime, sozlukKelimesi);
@@ -294,24 +288,40 @@
             }
         }
 
+        // Eğer sözlükten kelimeler eşleştiyse, doğrudan net açıklamayı getir
         if (bulunanAnlamlar.length > 0) {
-            let baglac = yakalananKelimeler.join(" ve ");
-            
-            // Hemfikir giriş kalıpları arasından rastgele seçim yapalım
-            const girisKalimlari = [
-                `Kesinlikle harika bir noktaya değindin! Söylediklerine %100 katılıyorum. Bahsettiğin ${baglac} konusu hakkında tam olarak şöyle düşünüyorum:\n\n`,
-                `Çok haklısın, bu kelimeleri yan yana getirmene bayıldım! Odaklandığın ${baglac} meseleleri gerçekten çok önemli. İşte tam da bu konuda düşündüklerim:\n\n`,
-                `Bu konuda seninle tamamen aynı fikirdeyim! ${baglac} üzerine konuşmak harika bir seçim. Dediğin gibi:\n\n`
-            ];
-            
-            let secilenGiris = girisKalimlari[Math.floor(Math.random() * girisKalimlari.length)];
-            return secilenGiris + bulunanAnlamlar.join("\n\n");
+            let baslik = yakalananKelimeler.join(" ve ");
+            return `🔍 [${baslik}] analizi:\n` + bulunanAnlamlar.join("\n\n");
         }
 
-        return null;
+        // SÖZLÜK DIŞI DOĞAL SORU KALIPLARI (Rastgele Cümle Çeşitliliğiyle)
+        if (temizCumle.includes("nasil basarili") || temizCumle.includes("nasil basarili olurum") || temizCumle.includes("basari yolu")) {
+            const basariCevaplari = [
+                "Başarılı olmak net bir hedef belirlemek, her gün taviz vermeden disiplinli çalışmak ve başarısızlıklardan ders çıkarmakla mümkündür. Çok çalışmak bu işin anahtarıdır.",
+                "Sürekli ve odaklanmış çalışarak başarılı olursun. Rotanı çiz, dikkatini dağıtan şeyleri hayatından çıkar ve pes etmeden devam et.",
+                "Başarının formülü basittir: Doğru strateji, çok çalışmak ve süreklilik. Ertelemeyi bıraktığın gün başarın katlanacaktır."
+            ];
+            return basariCevaplari[Math.floor(Math.random() * basariCevaplari.length)];
+        }
+
+        if (temizCumle.includes("ne yapiyorsun") || temizCumle.includes("ne is yaparsin")) {
+            return "Şu an senin girdilerini analiz ediyorum, kod tabanımı stabil tutmaya çalışıyorum.";
+        }
+
+        if (temizCumle.includes("kimsin") || temizCumle.includes("adin ne")) {
+            return "Ben İman Power Zeka. Tek bir index.html dosyasında yaşayan, sözlüğe ve kurallara dayalı akıllı bir asistanım.";
+        }
+
+        // HİÇBİR ŞEY BULAMAZSA DÜZ VE GERÇEKÇİ YANIT VER (Saçma Hemfikirlik Yok)
+        const standartCevaplar = [
+            `"${cumle}" ifadesini analiz ettim. Bu kelimeler şu anki bilgi haznemde veya sözlüğümde doğrudan kayıtlı değil. İleride buraya yeni mantıksal kurallar ekleyebilirsin.`,
+            `Girdiğin "${cumle}" mesajına dair net bir eşleşme bulamadım. Kod bloğundaki kuralları geliştirerek beni daha akıllı yapabilirsin.`,
+            `Anladım, fakat "${cumle}" sorusu hakkında henüz eğitilmedim. Kodun içerisine bu soru için yeni bir kalıp eklememizi ister misin?`
+        ];
+        return standartCevaplar[Math.floor(Math.random() * standartCevaplar.length)];
     }
 
-    // EKRAN VE GİRİŞ SİSTEMİ KONTROLLERİ
+    // EKRAN VE FIREBASE SİSTEMİ
     window.switchScreen = function(screenId) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('register-screen').style.display = 'none';
@@ -320,7 +330,7 @@
         const container = document.getElementById('main-container');
         if(screenId === 'chat-screen') {
             document.getElementById(screenId).style.display = 'flex';
-            container.style.maxWidth = "600px"; // Sohbet için ekranı genişlet
+            container.style.maxWidth = "600px";
         } else {
             document.getElementById(screenId).style.display = 'block';
             container.style.maxWidth = "480px";
@@ -335,10 +345,10 @@
         const dbRef = ref(db);
         get(child(dbRef, `users/${user}`)).then((snapshot) => {
             if (snapshot.exists()) {
-                alert("Bu harika kullanıcı adı kapılmış, başka dene!");
+                alert("Bu kullanıcı adı alınmış.");
             } else {
                 set(ref(db, 'users/' + user), { password: pass, chatHistory: "" }).then(() => {
-                    alert("Harika! Profilin başarıyla oluşturuldu.");
+                    alert("Profil başarıyla oluşturuldu.");
                     switchScreen('login-screen');
                 });
             }
@@ -348,7 +358,7 @@
     window.login = function() {
         const user = document.getElementById('login-username').value.trim().toLowerCase();
         const pass = document.getElementById('login-password').value;
-        if(!user || !pass) return alert("Lütfen giriş bilgilerini eksiksiz girin.");
+        if(!user || !pass) return alert("Lütfen bilgileri girin.");
 
         const dbRef = ref(db);
         get(child(dbRef, `users/${user}`)).then((snapshot) => {
@@ -358,7 +368,7 @@
                 switchScreen('chat-screen');
                 loadChatHistory();
             } else {
-                alert("Kullanıcı adı veya şifre eşleşmedi.");
+                alert("Hatalı giriş.");
             }
         });
     }
@@ -372,7 +382,7 @@
                 const history = JSON.parse(snapshot.val());
                 history.forEach(msg => appendMessage(msg.text, msg.sender));
             } else {
-                appendMessage("Hoş geldin! Ben İman Power Zeka. Seninle fikir alışverişi yapmak ve kelimeleri yan yana getirmek için sabırsızlanıyorum. Kelimeleri yanlış veya eksik yazsan da seni hemen anlarım, test edebilirsin!", "ai");
+                appendMessage("Sistem Aktif. Sorularınızı veya sözlükteki kelimeleri yazabilirsiniz. Yanlış yazımları otomatik algılarım.", "ai");
             }
         });
     }
@@ -396,15 +406,12 @@
         input.value = "";
 
         setTimeout(() => {
-            let yapayZekaCevabi = akilliHemfikirCevap(text);
-
-            if (!yapayZekaCevabi) {
-                yapayZekaCevabi = `Söylediklerini çok dikkatli dinledim ve kesinlikle çok mantıklı bir bakış açısı sunuyorsun! "${text}" fikrini düşündüğümde sana hak vermemek elde değil. Henüz bu kelimenin sözlüğümde tam karşılığı olmasa da düşüncelerine canıgönülden katılıyorum. Beni geliştirmeye devam et!`;
-            }
+            // Yeni akıllı ve gerçekçi cevap motorunu tetikliyoruz
+            let yapayZekaCevabi = akilliCevapMotoru(text);
 
             appendMessage(yapayZekaCevabi, 'ai');
             saveCurrentChat();
-        }, 600); // 600ms ile daha akıcı ve seri cevap hızı
+        }, 550);
     }
 
     function saveCurrentChat() {
