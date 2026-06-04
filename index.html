@@ -222,48 +222,28 @@
     let currentUsername = "";
 
     // ==========================================
-    // KELİME SÖZLÜĞÜNÜN KORUNAN BÖLÜMÜ
+    // 📚 TÜM KELİMELERİN VE KONULARIN BİRLEŞTİĞİ EKSİKSİZ SÖZLÜK 📚
     // ==========================================
     const OZEL_SOZLUK = {
-// --- MATEMATİK DERSİ ---
-        "tam sayılar": "🔢 [7. Sınıf Matematik - Tam Sayılarla İşlemler]\n\nTam sayılar kümesi, pozitif tam sayılar (+), negatif tam sayılar (-) ve nötr olan sıfırın (0) birleşmesiyle oluşur. Bu konuda en çok dikkat etmen gereken şey 'İşaret Kuralları'dır:\n\n1. Toplama İşleminde: Aynı işaretli sayılar normal toplanır ve ortak işaret verilir. Zıt işaretli sayılar toplanırken, mutlak değerce büyük olan sayıdan küçük olan çıkarılır ve büyük sayının işareti sonuca verilir.\n2. Çarpma ve Bölme İşleminde: Aynı işaretli iki sayının çarpımı veya bölümü her zaman POZİTİF (+), zıt işaretli iki sayının çarpımı veya bölümü ise her zaman NEGATİF (-) sonuç doğurur.\n3. Üslü Nicelikler: Negatif bir tam sayının parantez dışındaki kuvveti ÇİFT ise sonuç pozitif, TEK ise sonuç negatif olur. Parantez yoksa kuvvet ne olursa olsun işaret değişmez!",
+        // 7. Sınıf Konuları
+        "tam sayılar": "🔢 [7. Sınıf Matematik - Tam Sayılarla İşlemler]\n\nTam sayılar kümesi, pozitif tam sayılar (+), negatif tam sayılar (-) ve nötr olan sıfırın (0) birleşmesiyle oluşur. Bu konuda en çok dikkat etmen gereken şey 'İşaret Kuralları'dır:\n\n1. Toplama İşleminde: Aynı işaretli sayılar normal toplanır ve ortak işaret verilir. Zıt işaretli sayılar toplanırken, mutlak değerce büyük olan sayıdan küçük olan çıkarılır ve büyük sayının işareti sonuca verilir.\n2. Çarpma ve Bölme İşleminde: Aynı işaretli iki sayının çarpımı veya bölümü her zaman POZİTİF (+), zıt işaretli iki sayının çarpımı veya bölümü ise her zaman NEGATİF (-) sonuç doğurur.",
+        "rasyonel sayılar": "🧮 [7. Sınıf Matematik - Rasyonel Sayılar]\n\na ve b birer tam sayı olmak ve b sıfırdan farklı olmak şartıyla 'a/b' şeklinde yazılabilen tüm sayılara rasyonel sayılar denir ve 'Q' sembolü ile gösterilir. Paydaları eşitlemeden toplama-çıkarma yapamayacağını sakın unutma!",
+        "eşitlik ve denklem": "⚖️ [7. Sınıf Matematik - Eşitlik ve Denklem]\n\nİçinde en az bir bilinmeyen bulunan ve eşitlik içeren ifadelere birinci dereceden bir bilinmeyenli denklem denir. Denklemi çözerken amacımız bilinmeyeni yalnız bırakmaktır. Sayılar karşıya geçerken işaret değiştirir.",
+        "oran orantı": "📊 [7. Sınıf Matematik - Oran ve Orantı]\n\nİki çokluğun birbirine bölünerek karşılaştırılmasına 'oran', iki veya daha fazla oranın eşitliğine ise 'orantı' denir. Doğru orantıda çapraz çarpım, ters orantıda ise karşılıklı yan yana çarpım yapılır.",
+        "uzay araştırmaları": "🚀 [7. Sınıf Fen Bilimleri - Uzay Araştırmaları]\n\nUzay istasyonları, uzay mekikleri, roketler ve teleskoplar bu konunun temelidir. Unutma: İşlevi bitmiş yapay uydular ve roket tankları uzay kirliliğine neden olurken, meteorlar ve yıldızlar gibi doğal gök cismleri kirlilik oluşturmaz.",
+        "hücre": "🔬 [7. Sınıf Fen Bilimleri - Hücre]\n\nHücre canlıların en küçük yapı taşıdır. Bitki hücresi köşelidir ve hücre duvarı vardır. Hayvan hücresi ise yuvarlaktır, hücre duvarı bulunmaz.",
+        "bölünmeler": "🔄 [7. Sınıf Fen Bilimleri - Mitoz ve Mayoz Bölünme]\n\nMitoz bölünme vücut hücrelerinde görülür, kalıtsal çeşitlilik sağlamaz, yaraların onarılmasını sağlar. Mayoz bölünme ise üreme ana hücrelerinde görülür, parça değişimi (krossing-over) sayesinde kalıtsal çeşitlilik sağlar.",
+        "kuvvet ve enerji": "☄️ [7. Sınıf Fen Bilimleri - Kuvvet, İş ve Enerji]\n\nFiziksel anlamda iş yapılması için cismin uygulanan kuvvet yönünde hareket etmesi gerekir. Kinetik enerji sürat ve kütleye, potansiyel enerji ise yüksekliğe bağlıdır.",
+        "saf maddeler": "🧪 [7. Sınıf Fen Bilimleri - Saf Maddeler ve Karışımlar]\n\nElementler sembollerle, bileşikler ise formüllerle gösterilen saf maddelerdir. Karışımlar ise saf değildir, fiziksel yollarla ayrıştırılabilirler.",
+        "fiiller": "✍️ [7. Sınıf Türkçe - Fiiller]\n\nFiiller anlamlarına göre üçe ayrılır: İş (Kılış) fiilleri nesne alabilir (başına 'onu' gelir), durum fiilleri nesne alamaz, oluş fiilleri ise zamanla kendiliğinden olur (paslanmak, sararmak gibi).",
+        "zarflar": "🏃‍♂️ [7. Sınıf Türkçe - Zarflar]\n\nFiillerin anlamını durum, zaman, miktar, yer-yön veya soru şeklinde etkileyen kelimelerdir. Yer-yön zarfları (aşağı, yukarı vb.) ek alırlarsa isimleşirler.",
+        "iletişim": "🗣️ [7. Sınıf Sosyal Bilgiler - İletişim]\n\nEmpati kurmak ve 'Ben dili' kullanmak iletişimi olumlu etkilerken, suçlayıcı olan 'Sen dili' kullanmak ve ön yargılı olmak iletişimi olumsuz etkiler.",
+        "osmanlı devleti": "🏰 [7. Sınıf Sosyal Bilgiler - Osmanlı Dönemi]\n\n1299'da kurulan devletin kısa sürede büyüme nedenleri jeopolitik konumu, hoşgörü (istimalet) politikası ve fethedilen yerleri Türkleştiren iskan politikasıdır.",
+        "appearance": "👤 [7. Sınıf İngilizce - Appearance and Personality]\n\nİnsanların dış görünüşü (tall, slim) ve kişilik özelliklerini (honest, stubborn) anlatır. Karşılaştırma yaparken sıfatların sonuna '-er' veya başına 'more' getirilir.",
+        "biographies": "🇬🇧 [7. Sınıf İngilizce - Biographies]\n\nGeçmiş zaman (Past Simple Tense) kuralları işlenir. Düzenli fiiller '-ed' alır, düzensiz fiiller tamamen değişir.",
+        "melek ve ahiret": "🌙 [7. Sınıf Din Kültürü - Melek ve Ahiret İnancı]\n\nNurdan yaratılan melekler (Cebrail, Azrail, Mikail, İsrafil) ve dünya hayatından sonra başlayacak olan ebedi ahiret hayatı (Mizan, Mahşer) anlatılır.",
         
-        "rasyonel sayılar": "🧮 [7. Sınıf Matematik - Rasyonel Sayılar]\n\na ve b birer tam sayı olmak ve b sıfırdan farklı olmak şartıyla 'a/b' şeklinde yazılabilen tüm sayılara rasyonel sayılar denir ve 'Q' sembolü ile gösterilir. Her tam sayının paydasında gizli bir '1' vardır, bu yüzden her tam sayı aynı zamanda bir rasyonel sayıdır. Bu ünitede rasyonel sayıları ondalık gösterime çevirmeyi, devirli ondalık sayıları rasyonel sayıya dönüştürmeyi ve rasyonel sayılarda dört işlemi (toplama, çıkarma, çarpma, bölme) çok iyi bilmelisin. Paydaları eşitlemeden toplama-çıkarma yapamayacağını sakın unutma!",
-        
-        "eşitlik ve denklem": "⚖️ [7. Sınıf Matematik - Eşitlik ve Denklem]\n\nİçinde en az bir bilinmeyen (x, y, a vb.) bulunan ve eşitlik içeren ifadelere birinci dereceden bir bilinmeyenli denklem denir. Denklemi çözerken amacımız bilinmeyeni yalnız bırakmaktır. Temel kural şudur: Bir sayı eşitliğin diğer tarafına geçerken İŞARET DEĞİŞTİRİR. Pozitif sayı negatif (-), negatif sayı pozitif (+), çarpım durumundaki sayı bölüm, bölüm durumundaki sayı ise çarpım olarak karşıya geçer. (Örn: x + 5 = 12 ise, x = 12 - 5 yani x = 7 bulunur).",
-        
-        "oran orantı": "📊 [7. Sınıf Matematik - Oran ve Orantı]\n\nİki çokluğun birbirine bölünerek karşılaştırılmasına 'oran', iki veya daha fazla oranın eşitliğine ise 'orantı' denir. İki tür orantı vardır:\n1. Doğru Orantı: İki çokluktan biri artarken diğeri de aynı oranda artıyorsa (veya biri azalırken diğeri de azalıyorsa) buna doğru orantı denir. Çapraz çarpım yapılarak çözülür.\n2. Ters Orantı: Çokluklardan biri artarken diğeri aynı oranda azalıyorsa buna ters orantı denir. Karşılıklı (yan yana) çarpım yapılarak çözülür.",
-
-        // --- FEN BİLİMLERİ DERSİ ---
-        "uzay araştırmaları": "🚀 [7. Sınıf Fen Bilimleri - Uzay Araştırmaları]\n\nİnsanların uzayı incelemek, keşfetmek ve bilgi toplamak için yaptığı tüm çalışmalara uzay araştırmaları denir. Bu ünitenin ana kavramları şunlardır:\n- Uzay İstasyonu: Bilim insanlarının uzayda uzun süre kalıp deneyler yaptığı devasa laboratuvarlardır.\n- Uzay Roketi: Uzay araçlarını atmosferin dışına taşımak için kullanılan güçlü araçlardır. Genelde tek kullanımlıktır.\n- Uzay Mekiği: Yeniden kullanılabilen, roket gibi havalanıp uçak gibi piste inebilen araçlardır.\n- Uzay Sondası: Uzaktan kumanda edilen, gezegenleri inceleyen insansız uzay araçlarıdır.\n- Rasathane (Gözlemevi): İçinde dev aynalı teleskopların bulunduğu, ışık kirliliğinden uzak, yüksek yerlere kurulan uzay gözlem merkezleridir.\n⚠️ Uzay Kirliliği: Dünyanın çevresinde dönen ve artık işlevi bitmiş yapay uydular, roket tankları ve enkazların oluşturduğu kirliliktir. Doğal gök cisimleri uzay kirliliğine neden olmaz!",
-        
-        "hücre": "🔬 [7. Sınıf Fen Bilimleri - Hücre ve Bölünmeler]\n\nHücre, canlıların canlılık özelliği gösteren en küçük yapı birimidir. Dıştan içe doğru Hücre Zarı, Sitoplazma ve Çekirdek olmak üzere 3 temel kısımdan oluşur. 7. sınıfta bitki ve hayvan hücrelerinin farklarını adın gibi bilmelisin:\n- Bitki Hücresi: Köşeli yapıdadır, hücre zarına ek olarak sert bir 'Hücre Duvarı' vardır, büyük ve az sayıda koful barındırır, fotosentez yapan 'Kloroplast' organeli vardır.\n- Hayvan Hücresi: Yuvarlak yapıdadır, hücre duvarı yoktur, kofulları küçük ve çok sayıdadır, hücre bölünmesini sağlayan 'Sentrozom' ve sindirim yapan 'Lizozom' organeli bulunur.",
-        
-        "bölünmeler": "🔄 [7. Sınıf Fen Bilimleri - Mitoz ve Mayoz Bölünme]\n\nCanlılarda hücre çoğalması iki farklı bölünme türüyle gerçekleşir:\n1. Mitoz Bölünme: Vücut hücrelerinde görülür. Bölünme sonucu 2 yeni hücre oluşur ve kromozom sayısı DEĞİŞMEZ (2n ise yine 2n kalır). Oluşan hücreler ana hücreyle tıpatıp aynıdır. Tek hücrelilerde üremeyi, çok hücrelilerde büyüme, gelişme ve yaraların onarılmasını sağlar. Hayat boyu devam eder.\n2. Mayoz Bölünme: Üreme ana hücrelerinde (yumurta ana, sperm ana hücresi) görülür. Bölünme sonucu 4 yeni hücre oluşur ve kromozom sayısı YARIYA İNER (2n kromozom n kromozoma düşer). Bölünme sırasında gerçekleşen 'Parça Değişimi (Krossing-over)' sayesinde oluşan hücreler birbirinden ve ata canlıdan farklı olur, yani çeşitlilik sağlar. Ergenlikle başlar, üreme döneminin bitişiyle son bulur.",
-        
-        "kuvvet ve enerji": "☄️ [7. Sınıf Fen Bilimleri - Kuvvet, İş ve Enerji]\n\nFiziksel anlamda bir İŞ yapılabilmesi için cismin uygulanan kuvvet doğrultusunda hareket etmesi gerekir. (Örn: Duvarı iten ama hareket ettiremeyen çocuk fiziksel anlamda iş yapmaz. Sırt çantasıyla düz yolda yürüyen çocuk iş yapmaz çünkü kuvvet yukarı, hareket ileri doğrudur).\nEnerji ise iş yapabilme yeteneğidir:\n- Kinetik Enerji: Cismin süratinden ve kütlesinden dolayı sahip olduğu enerjidir. (Hız ve kütle artarsa kinetik enerji artar).\n- Potansiyel Enerji: Cismin konumundan, yüksekliğinden veya esnekliğinden dolayı depoladığı enerjidir. (Yükseklik arttıkça çekim potansiyel enerjisi artar).\n⚠️ Enerjinin Korunumu: Enerji yoktan var olmaz, vardan yok olmaz; sadece kinetikten potansiyele ya da potansiyelden kinetiğe dönüşür.",
-        
-        "saf maddeler": "🧪 [7. Sınıf Fen Bilimleri - Saf Maddeler ve Karışımlar]\n\nMaddeler atomik yapılarına göre sınıflara ayrılır:\n1. Elementler: Aynı cins atomlardan oluşan saf maddelerdir. Fiziksel veya kimyasal yollarla ayrıştırılamazlar. Sembollerle gösterilirler (Örn: Hidrojen [H], Helyum [He], Demir [Fe]).\n2. Bileşikler: En az iki farklı elementin kendi özelliklerini kaybederek, belirli oranlarda kimyasal olarak birleşmesiyle oluşan saf maddelerdir. Formüllerle gösterilirler (Örn: Su [H2O], Karbondioksit [CO2], Tuz [NaCl]).\n- Karışımlar: En az iki farklı maddenin kimyasal bağ oluşturmadan, rastgele oranlarda bir araya gelmesiyle oluşan saf olmayan maddelerdir. Homojen (çözeltiler, örn: tuzlu su) ve Heterojen (örn: zeytinyağı-su, salata) olarak ikiye ayrılırlar. Fiziksel yöntemlerle (buharlaştırma, damıtma, yoğunluk farkı) ayrıştırılabilirler.",
-
-        // --- TÜRKÇE DERSİ ---
-        "fiiller": "✍️ [7. Sınıf Türkçe - Fiillerde Anlam ve Yapı]\n\nFiiller (eylemler), iş, oluş veya durum bildiren kelimelerdir. Anlamlarına göre fiiller üçe ayrılır:\n1. İş (Kılış) Fiilleri: Öznenin kendi isteğiyle yaptığı ve bir nesneyi etkilediği fiillerdir. Kelimenin başına 'onu' getirdiğinde anlamlı olur. (Örn: Onu okudu, onu kırdı, onu yazdı).\n2. Durum Fiilleri: Öznenin içinde bulunduğu durumu bildirir, nesne alamaz. Başına 'onu' gelince anlamsız olur. (Örn: Onu güldü [anlamsız], onu uyudu, onu ağladı).\n3. Oluş Fiilleri: Öznenin iradesi dışında, zamanla kendiliğinden gerçekleşen doğa olayları veya biyolojik değişimlerdir. (Örn: Sararmak, paslanmak, yaşlanmak, büyümek).\n⚠️ Fiil Kipleri: Haber kipleri (zaman bildirir: şimdiki, gelecek, geçmiş, geniş zaman) ve Dilek kipleri (zaman bildirmez, tasarı bildirir: gereklilik, şart, istek, emir) olmak üzere ikiye ayrılır.",
-        
-        "zarflar": "🏃‍♂️ [7. Sınıf Türkçe - Zarflar (Belirteçler)]\n\nFiillerin, fiilimsilerin, sıfatların veya kendi türünden kelimelerin anlamını zaman, durum, miktar, yer-yön ya da soru yönünden etkileyen sözcüklerdir. Fiile sorulan sorulara göre türleri belirlenir:\n- Durum Zarfı: Fiile sorulan 'Nasıl?' sorusunun cevabıdır. (Örn: Koşarak geldi -> Nasıl geldi? Koşarak).\n- Zaman Zarfı: Fiile sorulan 'Ne zaman?' sorusunun cevabıdır. (Örn: Dün akşam aradı -> Ne zaman aradı? Dün akşam).\n- Miktar (Azlık-Çokluk) Zarfı: Fiile veya sıfata sorulan 'Ne kadar?' sorusunun cevabıdır. (Örn: Çok konuştu, en güzel kitap).\n- Yer-Yön Zarfı: Fiile sorulan 'Nereye?' sorusunun cevabıdır. (Aşağı, yukarı, içeri, dışarı, ileri, geri). ⚠️ Dikkat: Bu kelimeler ek alırsa isim olur! (Örn: 'İçeri girdi' zarftır, 'İçeriye girdi' isimdir).\n- Soru Zarfı: Eylemin anlamını soru yoluyla sağlayan kelimelerdir. (Nasıl, ne zaman, niçin, neden, ne kadar).",
-
-        // --- SOSYAL BİLGİLER DERSİ ---
-        "iletişim": "🗣️ [7. Sınıf Sosyal Bilgiler - İletişim ve İnsan İlişkileri]\n\nİletişim, duygu, düşünce veya bilgilerin her türlü yolla başkalarına aktarılması sürecidir. İletişimi olumlu etkileyen en önemli güçler 'Empati kurmak' (kendini başkasının yerine koymak), 'Etkin dinlemek' ve yapıcı olan 'Ben Dili'ni kullanmaktır. (Örn: 'Ders çalışmadığında senin için endişeleniyorum' $\rightarrow$ Ben dili). İletişimi koparan hatalar ise yargılamak, lakap takmak, suçlayıcı 'Sen Dili' kullanmak ve ön yargılı olmaktır. Ayrıca bu ünitede kitle iletişim özgürlüğü, sansür (yayın yasağı) ve RTÜK (Radyo ve Televizyon Üst Kurulu) gibi kavramlar işlenir.",
-        
-        "osmanlı devleti": "🏰 [7. Sınıf Sosyal Bilgiler - Türk Tarihinde Yolculuk / Osmanlı Dönemi]\n\n1299 yılında Söğüt ve Domaniç civarında Osman Bey tarafından kurulan küçük bir beyliğin kısa sürede bir dünya imparatorluğuna dönüşme sürecidir. Osmanlı'nın kısa sürede büyümesinin ana nedenleri:\n1. Coğrafi Konum (Jeopolitik): Bizans sınırında kurulması ve uç beyliği olması.\n2. İstimalet Politikası: Fethedilen yerlerdeki gayrimüslim halka uygulanan hoşgörü ve adalet yönetimi.\n3. İskan Politikası: Fethedilen Balkan topraklarına Anadolu'daki Türkmen göçebe nüfusun yerleştirilerek bölgenin kalıcı olarak Türkleştirilmesi.\n4. Gaza ve Cihat Anlayışı: Din uğruna yapılan savaşların getirdiği büyük motivasyon.\nBu ünitede ayrıca Orhan Bey dönemi (devletleşme), İstanbul'un Fethi (Coğrafi keşiflerin tetiklenmesi) ve Osmanlı toplum yapısı detaylıca incelenir.",
-
-        // --- İNGİLİZCE DERSİ ---
-        "appearance": "👤 [7. Sınıf İngilizce - Appearance and Personality (Ünite 1)]\n\nBu ünite insanların dış görünüşlerini (Appearance) ve kişilik özelliklerini (Personality) tarif etmeyi öğretir.\n- Dış Görünüş Kelimeleri: Tall (uzun), short (kısa), slim (zayıf), plump (balık etli), wavy hair (dalgalı saç), attractive (çekici).\n- Kişilik Kelimeleri: Honest (dürüst), punctual (dakik), generous (cömert), selfish (bencil), outgoing (sosyal/dışa dönük), stubborn (inatçı).\n⚠️ Dil Bilgisi: İki şeyi karşılaştırırken 'Comparative' (Karşılaştırma) yapıları kullanılır. Kısa sıfatların sonuna '-er' takısı gelir (tall -> taller), uzun sıfatların başına ise 'more' kelimesi getirilir (more beautiful). Karşılaştırma cümlelerinde sıfattan sonra mutlaka 'than' kelimesi kullanılır.",
-        
-        "biographies": "🇬🇧 [7. Sınıf İngilizce - Biographies (Ünite 3)]\n\nGeçmişte yaşamış önemli tarihi kişiliklerin, bilim insanlarının veya sanatçıların hayat hikayelerinin anlatıldığı ünitedir. Bu ünitenin temeli 'Past Simple Tense' yani Geçmiş Zaman'dır:\n- Düzenli fiillerin sonuna '-ed' takısı getirilir (visit -> visited, die -> died).\n- Düzensiz fiiller tamamen şekil değiştirir ve 2. halleri kullanılır (go -> went, win -> won, write -> wrote).\n- Birinin doğduğu yeri ve yılı belirtirken 'was born' veya 'were born' kalıbı kullanılır. (Örn: 'He was born in 1945').",
-
-        // --- DİN KÜLTÜRÜ DERSİ ---
-        "melek ve ahiret": "🌙 [7. Sınıf Din Kültürü - Melek ve Ahiret İnancı]\n\nGözle görülmeyen, nurdan yaratılmış, iradeleri olmadığı için günah işlemeyen ve sadece Allah'a ibadet eden nurani varlıklara melek denir. İslam'daki dört büyük melek ve vazifeleri şunlardır:\n- Cebrail: Peygamberlere vahiy ulaştırmakla görevlidir.\n- Azrail: Ölüm meleğidir, eceli gelenlerin canını alır.\n- Mikail: Tabiat olaylarını ve rızıkları idare eder.\n- İsrafil: Kıyamet günü ve yeniden dirilişte 'Sur' borusuna üflemekle görevlidir.\nAhiret inancı ise bu dünya hayatının geçici bir deneme olduğunu, ölümden sonra her insanın kabir hayatına (Berzah) geçeceğini, kıyamet koptuktan sonra büyük mahşer meydanında toplanıp (Haşr) 'Mizan' adı verilen ilahi terazide sevap ve günahlarının hesabını vereceğini öğretir.",
-
-        // --- PROJE VE SİSTEMİN TEMEL KELİMELERİ ---
+        // Klasik ve Yeni Temel Kelimeler
         "merhaba": "Sana da merhaba! Bugün senin için ne yapabilirim?",
         "selam": "Selam! Hoş geldin, seni dinliyorum.",
         "nasılsın": "Teşekkürler, gayet iyiyim ve çalışmaya hazırım. Sen nasılsın?",
@@ -273,28 +253,20 @@
         "zeka": "Zeka, sorunları çözme yeteneğidir. İman Power Zeka ise bu yeteneği geliştirmeyi hedefler.",
         "kodlama": "Kodlama, bilgisayarla konuşma dilidir. Mantıklı komutlar verirsen harikalar yaratırsın.",
         "github": "Projelerini depoladığın, sürüm kontrolü yaptığın ve tüm dünyaya açtığın yazılım kütüphanesidir.",
-        "firebase": "Verileri anlık olarak kaydeden, kullanıcı yönetimini sağlayan güçlü bir Google altyapısıdır."
-
-        // --- YENİ SİSTEM TEMEL KELİMELERİ & ETKİLEŞİM ---
+        "firebase": "Verileri anlık olarak kaydeden, kullanıcı yönetimini sağlayan güçlü bir Google altyapısıdır.",
         "günaydın": "☀️ Harika bir sabah! İman Power Zeka senin için güne hazır. Bugün hangi konuları fethedeceğiz?",
         "iyi geceler": "🌙 Sana da iyi geceler! Bugün harika çalıştın. Zihnini dinlendir, kodlar ve veriler bana emanet, iyi uykular.",
         "görüşürüz": "👋 Görüşmek üzere! Kendine çok iyi bak, ne zaman yardıma ihtiyacın olursa ben tam burada seni bekliyor olacağım.",
         "bay bay": "🏃‍♂️ Kaçtın demek! Tamamdır, sayfayı yenilediğinde sohbet geçmişini Firebase'de saklıyor olacağım, merak etme. Hoşça kal!",
-        
-        // Eğlence ve Espriler
-        "espri": "🤖 Sana bir yapay zeka esprisi yapayım:\n\nBir gün iki bilgisayar yolda yürüyormuş, biri diğerine demiş ki: 'Ya kanka, dün gece rüyamda ne gördüm biliyor musun?' diğeri 'Ne gördün?' demiş. O da '10101010' demiş! Muazzam bir rüya değil mi? (Anlamadıysan ikilik taban koduydu, canın sağ olsun!).",
-        "şaka": "🃏 Temel bir gün bilgisayar kursuna gitmiş, öğretmen demiş ki: 'Bilgisayarı açmak için düğmeye basın.' Temel gitmiş, gömleğinin düğmesine basmış! Neyse ki bizim İman Power Zeka'yı açmak için sadece giriş yapmak yetiyor.",
-        "komik": "Hazır mısın? Dünyada 10 çeşit insan vardır; ikilik (binary) sistemini bilenler ve bilmeyenler! Mizah yazılımım henüz test aşamasında, umarım tebessüm ettirmiştir.",
-        
-        // Motivasyon ve Destek
-        "sınav": "📝 Sınav dönemi geldi demek! Sakın stres yapma. Planlı çalışır, önemli kelimelerin özetlerine buradan göz atarsan o sınavdan yüksek almamak için hiçbir sebep yok. Kendine güven!",
+        "espri": "🤖 Sana bir yapay zeka esprisi yapayım:\n\nBir gün iki bilgisayar yolda yürüyormuş, biri diğerine demiş ki: 'Ya kanka, dün gece rüyamda ne gördüm biliyor musun?' diğeri 'Ne gördün?' demiş. O da '10101010' demiş! Muazzam bir rüya değil mi?",
+        "şaka": "🃏 Temel bir gün bilgisayar kursuna gitmiş, öğretmen demiş ki: 'Bilgisayarı açmak için düğmeye basın.' Temel gitmiş, gömleğinin düğmesine basmış!",
+        "komik": "Hazır mısın? Dünyada 10 çeşit insan vardır; ikilik (binary) sistemini bilenler ve bilmeyenler!",
+        "sınav": "📝 Sınav dönemi geldi demek! Sakın stres yapma. Planlı çalışır, önemli kelimelerin özetlerine buradan göz atarsan o sınavdan yüksek almamak için hiçbir sebep yok.",
         "yorgunum": "🔋 Pilin azalmış gibi görünüyor. Şimdi arkana yaslan, derin bir nefes al veya bir bardak su iç. Kendini çok zorlama, dinlenmek de başarının bir parçasıdır.",
-        "yapamıyorum": "💪 'Yapamıyorum' yok, 'henüz tam öğrenemedim' var! Unutma, en büyük yazılımlar bile tek bir 'index.html' ile başlar. Adım adım gideceğiz ve birlikte başaracağız.",
-        "sıkıldım": "🥱 Sıkılmak çok normal! Gel seninle küçük bir beyin jimnastiği yapalım. Yukarıdaki ders konularından (mesela 'uzay arastirmalari' veya 'tam sayilar') birini yaz, o üniteyi bir turlayalım, ne dersin?",
-        
-        // Yapay Zekanın Kişisel Özellikleri
+        "yapamıyorum": "💪 'Yapamıyorum' yok, 'henüz tam öğrenemedim' var! Unutma, en büyük yazılımlar bile tek bir 'index.html' ile başlar.",
+        "sıkıldım": "🥱 Sıkılmak çok normal! Gel seninle küçük bir beyin jimnastiği yapalım. Yukarıdaki ders konularından birini yaz, o üniteyi bir turlayalım, ne dersin?",
         "yaratıcı": "Ben İman Power Zeka'yım! GitHub Pages üzerinde parıldayan, kodlarla örülmüş ve senin isteklerine göre şekillenen dijital bir zekayım.",
-        "yardım": "🚨 İmdat butonuna bastın! Giriş ve kayıt sisteminde sorun yaşıyorsan Firebase kurallarını kontrol et. Ders çalışmak istiyorsan 7. sınıf ünitelerinden bir kelime yaz, hemen anlatayım.",
+        "yardım": "🚨 Giriş ve kayıt sisteminde sorun yaşıyorsan Firebase kurallarını kontrol et. Ders çalışmak istiyorsan 7. sınıf ünitelerinden bir kelime yaz, hemen anlatayım.",
         "öneri": "💡 Sana harika bir öneri: Bugün öğrendiğin zor bir konuyu sanki bana öğretiyormuş gibi buraya yazarak anlat. Bir şeyi başkasına anlatmak, onu hafızaya kazımanın en iyi yoludur!"
     };
 
@@ -316,14 +288,13 @@
         return track[str2.length][str1.length];
     }
 
-    // Gelişmiş, Doğal ve Net Yanıt Motoru
+    // Akıllı ve Gerçekçi Cevap Motoru
     function akilliCevapMotoru(cumle) {
         const temizCumle = cumle.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
         const kelimeler = temizCumle.split(" ");
         let bulunanAnlamlar = [];
         let yakalananKelimeler = [];
 
-        // ÖNCE SÖZLÜKTE ARAMA YAP (Eksik/Hatalı Harf Kontrolü Dahil)
         for (let kelime of kelimeler) {
             if (kelime.length < 3) continue;
 
@@ -344,13 +315,11 @@
             }
         }
 
-        // Eğer sözlükten kelimeler eşleştiyse, doğrudan net açıklamayı getir
         if (bulunanAnlamlar.length > 0) {
             let baslik = yakalananKelimeler.join(" ve ");
-            return `🔍 [${baslik}] analizi:\n` + bulunanAnlamlar.join("\n\n");
+            return `🔍 [${baslik}] analizi:\n\n` + bulunanAnlamlar.join("\n\n");
         }
 
-        // SÖZLÜK DIŞI DOĞAL SORU KALIPLARI (Rastgele Cümle Çeşitliliğiyle)
         if (temizCumle.includes("nasil basarili") || temizCumle.includes("nasil basarili olurum") || temizCumle.includes("basari yolu")) {
             const basariCevaplari = [
                 "Başarılı olmak net bir hedef belirlemek, her gün taviz vermeden disiplinli çalışmak ve başarısızlıklardan ders çıkarmakla mümkündür. Çok çalışmak bu işin anahtarıdır.",
@@ -368,7 +337,6 @@
             return "Ben İman Power Zeka. Tek bir index.html dosyasında yaşayan, sözlüğe ve kurallara dayalı akıllı bir asistanım.";
         }
 
-        // HİÇBİR ŞEY BULAMAZSA DÜZ VE GERÇEKÇİ YANIT VER (Saçma Hemfikirlik Yok)
         const standartCevaplar = [
             `"${cumle}" ifadesini analiz ettim. Bu kelimeler şu anki bilgi haznemde veya sözlüğümde doğrudan kayıtlı değil. İleride buraya yeni mantıksal kurallar ekleyebilirsin.`,
             `Girdiğin "${cumle}" mesajına dair net bir eşleşme bulamadım. Kod bloğundaki kuralları geliştirerek beni daha akıllı yapabilirsin.`,
@@ -377,7 +345,7 @@
         return standartCevaplar[Math.floor(Math.random() * standartCevaplar.length)];
     }
 
-    // EKRAN VE FIREBASE SİSTEMİ
+    // EKRAN VE FIREBASE SİSTEMİ KONTROLLERİ
     window.switchScreen = function(screenId) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('register-screen').style.display = 'none';
@@ -408,7 +376,7 @@
                     switchScreen('login-screen');
                 });
             }
-        });
+        }).catch(err => alert("Kayıt Hatası: " + err.message));
     }
 
     window.login = function() {
@@ -426,7 +394,7 @@
             } else {
                 alert("Hatalı giriş.");
             }
-        });
+        }).catch(err => alert("Giriş Hatası: " + err.message));
     }
 
     function loadChatHistory() {
@@ -462,9 +430,7 @@
         input.value = "";
 
         setTimeout(() => {
-            // Yeni akıllı ve gerçekçi cevap motorunu tetikliyoruz
             let yapayZekaCevabi = akilliCevapMotoru(text);
-
             appendMessage(yapayZekaCevabi, 'ai');
             saveCurrentChat();
         }, 550);
