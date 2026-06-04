@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İman Power Zeka v3</title>
+    <title>İman Power Zeka v4 - Pro Edition</title>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -122,6 +122,7 @@
             line-height: 1.5;
             font-size: 15px;
             word-wrap: break-word; 
+            white-space: pre-line;
             animation: fadeIn 0.3s ease;
         }
 
@@ -171,6 +172,7 @@
 <body>
 
 <div class="container" id="main-container">
+    <!-- GİRİŞ EKRANI -->
     <div id="login-screen">
         <h2>İman Power Zeka</h2>
         <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Geleceğin Akıllı Bilgi Sistemi</p>
@@ -180,6 +182,7 @@
         <div class="toggle-link" onclick="switchScreen('register-screen')">Aramıza katılmak ister misin? <span>Kayıt Ol</span></div>
     </div>
 
+    <!-- KAYIT EKRANI -->
     <div id="register-screen" style="display: none;">
         <h2>Yeni Profil Oluştur</h2>
         <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Verilerin Güvenle Saklanacak</p>
@@ -189,6 +192,7 @@
         <div class="toggle-link" onclick="switchScreen('login-screen')">Zaten bir hesabın var mı? <span>Giriş Yap</span></div>
     </div>
 
+    <!-- SOHBET EKRANI -->
     <div id="chat-screen">
         <div class="header-area">
             <h3 style="margin:0; font-size: 16px; color: var(--primary-neon);" id="welcome-user">Kullanıcı</h3>
@@ -196,7 +200,7 @@
         </div>
         <div id="chat-box"></div>
         <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Bir şeyler sorun veya kelime yazın..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <input type="text" id="chat-input" placeholder="Aynı anda birden çok şey sorun (örn: hücre ve espri)..." onkeypress="if(event.key === 'Enter') sendMessage()">
             <button onclick="sendMessage()">Gönder</button>
         </div>
     </div>
@@ -222,28 +226,63 @@
     let currentUsername = "";
 
     // ==========================================
-    // 📚 TÜM KELİMELERİN VE KONULARIN BİRLEŞTİĞİ EKSİKSİZ SÖZLÜK 📚
+    // 🧠 TÜM KELİMELERİN VE KONULARIN BİRLEŞTİĞİ SÖZLÜK 🧠
     // ==========================================
     const OZEL_SOZLUK = {
-        // 7. Sınıf Konuları
-        "tam sayılar": "🔢 [7. Sınıf Matematik - Tam Sayılarla İşlemler]\n\nTam sayılar kümesi, pozitif tam sayılar (+), negatif tam sayılar (-) ve nötr olan sıfırın (0) birleşmesiyle oluşur. Bu konuda en çok dikkat etmen gereken şey 'İşaret Kuralları'dır:\n\n1. Toplama İşleminde: Aynı işaretli sayılar normal toplanır ve ortak işaret verilir. Zıt işaretli sayılar toplanırken, mutlak değerce büyük olan sayıdan küçük olan çıkarılır ve büyük sayının işareti sonuca verilir.\n2. Çarpma ve Bölme İşleminde: Aynı işaretli iki sayının çarpımı veya bölümü her zaman POZİTİF (+), zıt işaretli iki sayının çarpımı veya bölümü ise her zaman NEGATİF (-) sonuç doğurur.",
+        // --- 7. SINIF MATEMATİK ---
+        "tam sayılar": "🔢 [7. Sınıf Matematik - Tam Sayılarla İşlemler]\n\nTam sayılar kümesi, pozitif tam sayılar (+), negatif tam sayılar (-) ve nötr olan sıfırın (0) birleşmesiyle oluşur. Bu konuda en çok dikkat etmen gereken şey 'İşaret Kuralları'dır:\n\n1. Toplama İşleminde: Aynı işaretli sayılar normal toplanır ve ortak işaret verilir. Zıt işaretli sayılar toplanırken, mutlak değerce büyük olan sayıdan küçük olan çıkarılır und büyük sayının işareti sonuca verilir.\n2. Çarpma ve Bölme İşleminde: Aynı işaretli iki sayının çarpımı veya bölümü her zaman POZİTİF (+), zıt işaretli iki sayının çarpımı veya bölümü ise her zaman NEGATİF (-) sonuç doğurur.",
         "rasyonel sayılar": "🧮 [7. Sınıf Matematik - Rasyonel Sayılar]\n\na ve b birer tam sayı olmak ve b sıfırdan farklı olmak şartıyla 'a/b' şeklinde yazılabilen tüm sayılara rasyonel sayılar denir ve 'Q' sembolü ile gösterilir. Paydaları eşitlemeden toplama-çıkarma yapamayacağını sakın unutma!",
         "eşitlik ve denklem": "⚖️ [7. Sınıf Matematik - Eşitlik ve Denklem]\n\nİçinde en az bir bilinmeyen bulunan ve eşitlik içeren ifadelere birinci dereceden bir bilinmeyenli denklem denir. Denklemi çözerken amacımız bilinmeyeni yalnız bırakmaktır. Sayılar karşıya geçerken işaret değiştirir.",
         "oran orantı": "📊 [7. Sınıf Matematik - Oran ve Orantı]\n\nİki çokluğun birbirine bölünerek karşılaştırılmasına 'oran', iki veya daha fazla oranın eşitliğine ise 'orantı' denir. Doğru orantıda çapraz çarpım, ters orantıda ise karşılıklı yan yana çarpım yapılır.",
+        "yüzdeler": "📈 [7. Sınıf Matematik - Yüzde Problemleri]\n\nBir çokluğun yüzde birini veya belirtilen bir yüzdesini bulma konusudur. Paydası 100 olan kesirler % sembolü ile gösterilir. Mağazalardaki indirim (iskonto) sorularında fiyattan yüzdeyi çıkarırız, KDV veya faiz gibi zam sorularında ise bulduğumuz yüzde değerini ana fiyata ekleriz.",
+        "geometri": "📐 [7. Sınıf Matematik - Doğrular, Açılar ve Çokgenler]\n\nBu ünitede paralel iki doğrunun bir kesenle yaptığı açılar çok önemlidir. 'Z kuralı', 'U kuralı', 'M kuralı' ve 'Yöndeş açılar' gibi pratik kuralları bilmelisin. Ayrıca iç açılar toplamı formülü (n-2)*180 olan çokgenleri bu sene bol bol kullanacaksın.",
+        "veri analizi": "📊 [7. Sınıf Matematik - Veri Analizi ve Grafikler]\n\nToplanan verilerin çizgi, sütun veya daire grafiği ile gösterilmesidir. Daire grafiğinde tüm veriler 360 derece üzerinden orantılanır. Ayrıca verilerin merkezi eğilim ölçüleri olan Aritmetik Ortalama, Tepe Değer (Mod) ve Ortanca Değer (Medyan) bu ünitede yer alır.",
+
+        // --- 7. SINIF FEN BİLİMLERİ ---
         "uzay araştırmaları": "🚀 [7. Sınıf Fen Bilimleri - Uzay Araştırmaları]\n\nUzay istasyonları, uzay mekikleri, roketler ve teleskoplar bu konunun temelidir. Unutma: İşlevi bitmiş yapay uydular ve roket tankları uzay kirliliğine neden olurken, meteorlar ve yıldızlar gibi doğal gök cismleri kirlilik oluşturmaz.",
         "hücre": "🔬 [7. Sınıf Fen Bilimleri - Hücre]\n\nHücre canlıların en küçük yapı taşıdır. Bitki hücresi köşelidir ve hücre duvarı vardır. Hayvan hücresi ise yuvarlaktır, hücre duvarı bulunmaz.",
         "bölünmeler": "🔄 [7. Sınıf Fen Bilimleri - Mitoz ve Mayoz Bölünme]\n\nMitoz bölünme vücut hücrelerinde görülür, kalıtsal çeşitlilik sağlamaz, yaraların onarılmasını sağlar. Mayoz bölünme ise üreme ana hücrelerinde görülür, parça değişimi (krossing-over) sayesinde kalıtsal çeşitlilik sağlar.",
-        "kuvvet ve enerji": "☄️ [7. Sınıf Fen Bilimleri - Kuvvet, İş ve Enerji]\n\nFiziksel anlamda iş yapılması için cismin uygulanan kuvvet yönünde hareket etmesi gerekir. Kinetik enerji sürat ve kütleye, potansiyel enerji ise yüksekliğe bağlıdır.",
+        "kuvvet ve enerji": "☄️ [7. Sınıf Fen Bilimleri - Kuvvet, İş ve Enerji]\n\nFiziksel anlamda iş yapılması için cismin uygulanan kuvvet yönünde hareket etmesi gerekir. Kinetik herji sürat ve kütleye, potansiyel enerji ise yüksekliğe bağlıdır.",
         "saf maddeler": "🧪 [7. Sınıf Fen Bilimleri - Saf Maddeler ve Karışımlar]\n\nElementler sembollerle, bileşikler ise formüllerle gösterilen saf maddelerdir. Karışımlar ise saf değildir, fiziksel yollarla ayrıştırılabilirler.",
+        "ışığın soğurulması": "🌈 [7. Sınıf Fen Bilimleri - Işığın Soğurulması]\n\nIşığın maddeler tarafından tutulmasına soğurulma denir. Koyu renkli cisimler ışığı çok soğurur ve ısınır (bu yüzden kışın koyu giyiniriz), açık renkli cisimler ise ışığı yansıtır. Beyaz ışık tüm renklerin birleşimidir.",
+        "aynalar": "🪞 [7. Sınıf Fen Bilimleri - Aynalar ve Yansıma]\n\nAynalar düz, çukur ve tümsek olmak üzere üçe ayrılır. Düz aynada görüntü simetriktir. Çukur ayna ışığı toplar ve büyütebilir (dişçi aynası). Tümsek ayna ise ışığı dağıtır, çok geniş bir alanı gösterir (araba aynası).",
+        "ekosistem": "🌱 [7. Sınıf Fen Bilimleri - Canlılar ve Çevre]\n\nBelirli bir alanda yaşayan canlılar (biyotik) ile cansız çevrelerin (abiyotik: su, hava, toprak) oluşturduğu bütüne ekosistem denir. Bu ünitede biyoçeşitlilik ve çevre kirliliğini önleme yolları incelenir.",
+
+        // --- 7. SINIF TÜRKÇE ---
         "fiiller": "✍️ [7. Sınıf Türkçe - Fiiller]\n\nFiiller anlamlarına göre üçe ayrılır: İş (Kılış) fiilleri nesne alabilir (başına 'onu' gelir), durum fiilleri nesne alamaz, oluş fiilleri ise zamanla kendiliğinden olur (paslanmak, sararmak gibi).",
         "zarflar": "🏃‍♂️ [7. Sınıf Türkçe - Zarflar]\n\nFiillerin anlamını durum, zaman, miktar, yer-yön veya soru şeklinde etkileyen kelimelerdir. Yer-yön zarfları (aşağı, yukarı vb.) ek alırlarsa isimleşirler.",
+        "sözcükte anlam": "📖 [7. Sınıf Türkçe - Sözcükte Anlam]\n\nKelimelerin kazandığı anlam türleridir. Gerçek Anlam (kelimenin akla gelen ilk anlamı), Mecaz Anlam (gerçek anlamdan tamamen uzaklaşarak kazandığı yeni anlam) ve Terim Anlam (özel bilim/sanat terimleri) olarak incelenir.",
+        "cümlede anlam": "💬 [7. Sınıf Türkçe - Cümlede Anlam İlişkileri]\n\nCümlelerin birbiriyle olan mantıksal bağıdır. Öznel cümleler (kanıtlanamaz kişisel görüş), Nesnel cümleler (kanıtlanabilir durumlar). Ayrıca Neden-Sonuç, Amaç-Sonuç ve Koşul-Sonuç cümleleri bu ünitededir.",
+        "deyimler ve atasözleri": "💡 [7. Sınıf Türkçe - Kalıplaşmış Söz Öbekleri]\n\nDeyimler anlık durumları özetleyen mecazi kalıplardır (Örn: Göze girmek). Atasözleri ise geçmiş kuşakların tecrübelerine dayanan ders verici bilge cümlelerdir (Örn: Ayağını yorganına göre uzat).",
+
+        // --- 7. SINIF SOSYAL BİLGİLER ---
         "iletişim": "🗣️ [7. Sınıf Sosyal Bilgiler - İletişim]\n\nEmpati kurmak ve 'Ben dili' kullanmak iletişimi olumlu etkilerken, suçlayıcı olan 'Sen dili' kullanmak ve ön yargılı olmak iletişimi olumsuz etkiler.",
         "osmanlı devleti": "🏰 [7. Sınıf Sosyal Bilgiler - Osmanlı Dönemi]\n\n1299'da kurulan devletin kısa sürede büyüme nedenleri jeopolitik konumu, hoşgörü (istimalet) politikası ve fethedilen yerleri Türkleştiren iskan politikasıdır.",
+        "nüfus ve göç": "🗺️ [7. Sınıf Sosyal Bilgiler - Ülkemizde Nüfus ve Yerleşme]\n\nİnsanların yerleşme tercihlerinde doğal (iklim, su) ve beşeri (sanayi, eğitim, iş imkanı) faktörler etkilidir. Göç, ekonomik veya siyasi nedenlerle bir yerden başka yere taşınmaktır.",
+        "küresel bağlar": "🌍 [7. Sınıf Sosyal Bilgiler - Küresel Bağlar]\n\nÜlkemizin üye olduğu uluslararası kuruluşları (BM, NATO, İslam İşbirliği Teşkilatı) ve dünyayı ilgilendiren küresel sorunları (iklim değişikliği, kıtlık) kapsar.",
+
+        // --- İNGİLİZCE & DİN KÜLTÜRÜ ---
         "appearance": "👤 [7. Sınıf İngilizce - Appearance and Personality]\n\nİnsanların dış görünüşü (tall, slim) ve kişilik özelliklerini (honest, stubborn) anlatır. Karşılaştırma yaparken sıfatların sonuna '-er' veya başına 'more' getirilir.",
         "biographies": "🇬🇧 [7. Sınıf İngilizce - Biographies]\n\nGeçmiş zaman (Past Simple Tense) kuralları işlenir. Düzenli fiiller '-ed' alır, düzensiz fiiller tamamen değişir.",
         "melek ve ahiret": "🌙 [7. Sınıf Din Kültürü - Melek ve Ahiret İnancı]\n\nNurdan yaratılan melekler (Cebrail, Azrail, Mikail, İsrafil) ve dünya hayatından sonra başlayacak olan ebedi ahiret hayatı (Mizan, Mahşer) anlatılır.",
-        
-        // Klasik ve Yeni Temel Kelimeler
+        "hac ve kurban": "🕋 [7. Sınıf Din Kültürü - Hac ve Kurban İbadeti]\n\nHac, Müslümanların Kabe'yi ve etrafındaki kutsal mekanları ziyaret etmesidir. Kurban ise Allah'a yakınlaşmak ve yardımlaşmak amacıyla belirli şartları taşıyan hayvanların kesilmesidir.",
+
+        // --- YAZILIM & TEKNOLOJİ ---
+        "html": "🌐 [Yazılım Dünyası - HTML]\n\nWeb sayfalarının iskeletini oluşturan metin işaretleme dilidir. Tarayıcılar bu kodları okuyarak bize görsel sayfalar sunar.",
+        "css": "🎨 [Yazılım Dünyası - CSS]\n\nHTML ile kurulan iskelete renk, düzen, stil ve estetik giydiren şablondur. Sitemizin harika neon parlamaları CSS ürünüdür.",
+        "javascript": "⚡ [Yazılım Dünyası - JavaScript]\n\nWeb sayfalarına mantık ve hareket veren programlama dilidir. Şu an senin yazdığın çoklu kelimeleri analiz eden bu gelişmiş zeka motoru tamamen JS ile çalışıyor.",
+        "algoritma": "🧩 [Yazılım Dünyası - Algoritma]\n\nBir sorunu çözmek için tasarlanan adım adım mantıksal işlem yoludur. Yazılımların düzgün ve hatasız akmasını sağlar.",
+        "bug": "🐞 [Yazılım Dünyası - Bug (Hata)]\n\nYazılım dünyasında kodların beklenmedik şekilde kilitlenmesi veya yanlış çalışması durumudur. Bunları temizlemeye 'debugging' denir.",
+        "api": "🔌 [Yazılım Dünyası - API]\n\nİki farklı uygulamanın veya sistemin güvenle veri alışverişi yapmasını sağlayan teknolojik bir köprüdür.",
+        "veritabanı": "🗄️ [Yazılım Dünyası - Database]\n\nVerilerin ve kullanıcı geçmişlerinin düzenli, şifreli ve hızlı şekilde depolandığı alandır. Biz Firebase altyapısını kullanıyoruz.",
+
+        // --- GENEL KÜLTÜR & BİLİM ---
+        "karadelik": "🌌 [Genel Kültür - Karadelikler]\n\nYerçekimi kuvveti o kadar güçlü olan gök cisimleridir ki, ışık dahil hiçbir şey onların çekim alanından kaçamaz. Yıldız çökmeleriyle oluşurlar.",
+        "yapay zeka": "🤖 [Genel Kültür - Artificial Intelligence]\n\nBilgisayarların insan benzeri düşünme, analiz yapma ve problem çözme yeteneklerini taklit etmesini sağlayan ileri teknolojidir.",
+        "kuantum": "⚛️ [Genel Kültür - Kuantum Fiziği]\n\nAtom ve atom altı parçacıkların davranışlarını inceleyen fizik dalıdır. Klasik fizik kurallarının ötesinde, büyüleyici kuralları vardır.",
+        "dna": "🧬 [Genel Kültür - Yaşam Şifresi]\n\nCanlıların tüm gelişimini ve kalıtsal özelliklerini yöneten hücre içindeki sarmal yapılı devasa bilgi moleküldür.",
+
+        // --- GÜNLÜK ETKİLEŞİM & TEMEL KELİMELER ---
         "merhaba": "Sana da merhaba! Bugün senin için ne yapabilirim?",
         "selam": "Selam! Hoş geldin, seni dinliyorum.",
         "nasılsın": "Teşekkürler, gayet iyiyim ve çalışmaya hazırım. Sen nasılsın?",
@@ -252,7 +291,7 @@
         "iman": "İman; inanmak, güvenmek ve samimiyet demektir. Bu projenin özüdür.",
         "zeka": "Zeka, sorunları çözme yeteneğidir. İman Power Zeka ise bu yeteneği geliştirmeyi hedefler.",
         "kodlama": "Kodlama, bilgisayarla konuşma dilidir. Mantıklı komutlar verirsen harikalar yaratırsın.",
-        "github": "Projelerini depoladığın, sürüm kontrolü yaptığın ve tüm dünyaya açtığın yazılım kütüphanesidir.",
+        "github": "Projelerini depoladığın, sürüm kontrolü yaptığın ve tüm dünyaya açtığın yazılım kütünesidir.",
         "firebase": "Verileri anlık olarak kaydeden, kullanıcı yönetimini sağlayan güçlü bir Google altyapısıdır.",
         "günaydın": "☀️ Harika bir sabah! İman Power Zeka senin için güne hazır. Bugün hangi konuları fethedeceğiz?",
         "iyi geceler": "🌙 Sana da iyi geceler! Bugün harika çalıştın. Zihnini dinlendir, kodlar ve veriler bana emanet, iyi uykular.",
@@ -270,7 +309,7 @@
         "öneri": "💡 Sana harika bir öneri: Bugün öğrendiğin zor bir konuyu sanki bana öğretiyormuş gibi buraya yazarak anlat. Bir şeyi başkasına anlatmak, onu hafızaya kazımanın en iyi yoludur!"
     };
 
-    // Harf tolerans algoritması
+    // İleri Seviye Metin Mesafe/Benzerlik Algoritması (Levenshtein Distance)
     function getSimilarityScore(str1, str2) {
         const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
         for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
@@ -288,61 +327,70 @@
         return track[str2.length][str1.length];
     }
 
-    // Akıllı ve Gerçekçi Cevap Motoru
+    // 🔥 YENİ NESİL GELİŞMİŞ DOĞAL DİL İŞLEME VE ÇOKLU İSTEK MOTORU 🔥
     function akilliCevapMotoru(cumle) {
-        const temizCumle = cumle.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-        const kelimeler = temizCumle.split(" ");
-        let bulunanAnlamlar = [];
+        // Türkçe karakterleri standardize et, noktalama işaretlerini sil
+        let temizCumle = cumle.toLowerCase()
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"")
+            .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
+            .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c");
+
+        let bulunanSonuclar = [];
         let yakalananKelimeler = [];
 
-        for (let kelime of kelimeler) {
-            if (kelime.length < 3) continue;
+        // Sözlükteki her bir kelime grubu için cümlenin içinde arama yap
+        for (let sozlukKelimesi in OZEL_SOZLUK) {
+            let standartSozlukKey = sozlukKelimesi.toLowerCase()
+                .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
+                .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c");
 
-            let enYakinKelime = "";
-            let enDusukMesafe = 3; 
+            // 1. Doğrudan İçerme Kontrolü (Cümle içinde tam kelime veya kökü geçiyor mu?)
+            // Örn: "hücreler", "hücreyi", "hücreye" kelimeleri "hücre"yi tetikler
+            if (temizCumle.includes(standartSozlukKey)) {
+                if (!yakalananKelimeler.includes(sozlukKelimesi)) {
+                    bulunanSonuclar.push(OZEL_SOZLUK[sozlukKelimesi]);
+                    yakalananKelimeler.push(sozlukKelimesi.toUpperCase());
+                }
+                continue; // Yakalandıysa bir sonrakine geç
+            }
 
-            for (let sozlukKelimesi in OZEL_SOZLUK) {
-                let mesafe = getSimilarityScore(kelime, sozlukKelimesi);
-                if (mesafe < enDusukMesafe) {
-                    enDusukMesafe = mesafe;
-                    enYakinKelime = sozlukKelimesi;
+            // 2. Harf Hata Toleransı Kontrolü (Kullanıcı harfi yanlış yazdıysa tolerans)
+            let cumleKelimeleri = temizCumle.split(" ");
+            for (let cKelime of cumleKelimeleri) {
+                if (cKelime.length >= 4 && standartSozlukKey.length >= 4) {
+                    let mesafe = getSimilarityScore(cKelime, standartSozlukKey);
+                    // Kelime uzunluğuna göre 1 veya 2 harf hatasını kabul et
+                    if (mesafe <= 1 || (standartSozlukKey.includes(cKelime) && cKelime.length >= 4)) {
+                        if (!yakalananKelimeler.includes(sozlukKelimesi)) {
+                            bulunanSonuclar.push(OZEL_SOZLUK[sozlukKelimesi]);
+                            yakalananKelimeler.push(sozlukKelimesi.toUpperCase());
+                        }
+                    }
                 }
             }
-
-            if (enYakinKelime) {
-                bulunanAnlamlar.push(OZEL_SOZLUK[enYakinKelime]);
-                yakalananKelimeler.push(enYakinKelime.toUpperCase());
-            }
         }
 
-        if (bulunanAnlamlar.length > 0) {
-            let baslik = yakalananKelimeler.join(" ve ");
-            return `🔍 [${baslik}] analizi:\n\n` + bulunanAnlamlar.join("\n\n");
+        // Eğer cümleden birden fazla kelime/konu yakalandıysa, hepsini alt alta birleştir!
+        if (bulunanSonuclar.length > 0) {
+            let baslik = yakalananKelimeler.join(" + ");
+            let birlesikCevap = `🧠 [İman Power Analiz Motoru]\n🤖 Sorduğun cümle içerisinden şu konuları tespit ettim: ${baslik}\n\n`;
+            birlesikCevap += bulunanSonuclar.join("\n\n----------------------------\n\n");
+            return birlesikCevap;
         }
 
-        if (temizCumle.includes("nasil basarili") || temizCumle.includes("nasil basarili olurum") || temizCumle.includes("basari yolu")) {
-            const basariCevaplari = [
-                "Başarılı olmak net bir hedef belirlemek, her gün taviz vermeden disiplinli çalışmak ve başarısızlıklardan ders çıkarmakla mümkündür. Çok çalışmak bu işin anahtarıdır.",
-                "Sürekli ve odaklanmış çalışarak başarılı olursun. Rotanı çiz, dikkatini dağıtan şeyleri hayatından çıkar ve pes etmeden devam et.",
-                "Başarının formülü basittir: Doğru strateji, çok çalışmak ve süreklilik. Ertelemeyi bıraktığın gün başarın katlanacaktır."
-            ];
-            return basariCevaplari[Math.floor(Math.random() * basariCevaplari.length)];
+        // Klasik Akıllı Soru Kalıpları Kontrolü
+        if (temizCumle.includes("nasil basarili") || temizCumle.includes("basari yolu") || temizCumle.includes("ders calismak")) {
+            return "🚀 Başarılı olmanın sırrı İman Power felsefesinde saklıdır: Hedef belirle, dikkat dağıtıcıları kapat, buradaki 7. sınıf özetlerini tekrar et ve her gün kararlılıkla çalış!";
+        }
+        if (temizCumle.includes("ne yapiyor") || temizCumle.includes("ne is yaparsin") || temizCumle.includes("gorevin ne")) {
+            return "⚙️ Şu an senin girdilerini kelime kelime analiz ediyor, cümlenin köklerini çözümlüyor ve Firebase veritabanını canlı tutuyorum.";
+        }
+        if (temizCumle.includes("kimsin") || temizCumle.includes("adin ne") || temizCumle.includes("sen kimsin")) {
+            return "🤖 Ben İman Power Zeka'yım. Çoklu istekleri ayırt edebilen profesyonel bir kod mimarisine sahibim!";
         }
 
-        if (temizCumle.includes("ne yapiyorsun") || temizCumle.includes("ne is yaparsin")) {
-            return "Şu an senin girdilerini analiz ediyorum, kod tabanımı stabil tutmaya çalışıyorum.";
-        }
-
-        if (temizCumle.includes("kimsin") || temizCumle.includes("adin ne")) {
-            return "Ben İman Power Zeka. Tek bir index.html dosyasında yaşayan, sözlüğe ve kurallara dayalı akıllı bir asistanım.";
-        }
-
-        const standartCevaplar = [
-            `"${cumle}" ifadesini analiz ettim. Bu kelimeler şu anki bilgi haznemde veya sözlüğümde doğrudan kayıtlı değil. İleride buraya yeni mantıksal kurallar ekleyebilirsin.`,
-            `Girdiğin "${cumle}" mesajına dair net bir eşleşme bulamadım. Kod bloğundaki kuralları geliştirerek beni daha akıllı yapabilirsin.`,
-            `Anladım, fakat "${cumle}" sorusu hakkında henüz eğitilmedim. Kodun içerisine bu soru için yeni bir kalıp eklememizi ister misin?`
-        ];
-        return standartCevaplar[Math.floor(Math.random() * standartCevaplar.length)];
+        // Eğer hiçbir kelime eşleşmediyse üretilecek ultra esnek profesyonel yanıt
+        return `🤔 Cümleni ("${cumle}") kelime kelime taradım ancak veri tabanındaki 7. sınıf ders konuları veya etkileşim kelimeleriyle tam bir bağ kuramadım.\n\n💡 İpucu: Bana aynı anda birden fazla şey sorabilirsin! Örneğin: 'Bana rasyonel sayılar ve hücre konusunu anlat, üstüne bir de espri yap' yazarak beni test edebilirsin!`;
     }
 
     // EKRAN VE FIREBASE SİSTEMİ KONTROLLERİ
@@ -354,7 +402,7 @@
         const container = document.getElementById('main-container');
         if(screenId === 'chat-screen') {
             document.getElementById(screenId).style.display = 'flex';
-            container.style.maxWidth = "600px";
+            container.style.maxWidth = "650px"; // Geniş cevaplar için ekranı büyüttük
         } else {
             document.getElementById(screenId).style.display = 'block';
             container.style.maxWidth = "480px";
@@ -406,7 +454,7 @@
                 const history = JSON.parse(snapshot.val());
                 history.forEach(msg => appendMessage(msg.text, msg.sender));
             } else {
-                appendMessage("Sistem Aktif. Sorularınızı veya sözlükteki kelimeleri yazabilirsiniz. Yanlış yazımları otomatik algılarım.", "ai");
+                appendMessage("🔥 İman Power Pro Engine Devreye Girdi.\nArtık uzun cümleler kurabilir, aynı anda birden fazla konuyu (Örn: 'hücre ve tam sayılar anlat bi de saka yap') sorabilirsin. Hepsini anlarım!", "ai");
             }
         });
     }
@@ -433,7 +481,7 @@
             let yapayZekaCevabi = akilliCevapMotoru(text);
             appendMessage(yapayZekaCevabi, 'ai');
             saveCurrentChat();
-        }, 550);
+        }, 500);
     }
 
     function saveCurrentChat() {
