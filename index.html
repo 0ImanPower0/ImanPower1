@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İman Power Zeka</title>
     <style>
-        /* Modern ve Şık Tasarım */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #121212;
@@ -58,7 +57,6 @@
         }
         .toggle-link span { color: #00adb5; text-decoration: underline; }
         
-        /* Sohbet Ekranı Tasarımı */
         #chat-screen { display: none; height: 80vh; flex-direction: column; }
         #chat-box {
             flex: 1;
@@ -69,12 +67,12 @@
             background: #181818;
             margin-bottom: 10px;
         }
-        .msg { margin: 10px 0; padding: 10px; border-radius: 8px; max-width: 80%; }
+        .msg { margin: 10px 0; padding: 10px; border-radius: 8px; max-width: 80%; word-wrap: break-word; }
         .user-msg { background: #00adb5; margin-left: auto; text-align: right; }
         .ai-msg { background: #333; margin-right: auto; }
         .chat-input-area { display: flex; gap: 8px; }
         .chat-input-area input { margin: 0; }
-        .chat-input-area button { margin: 0; width: auto; px: 20px; }
+        .chat-input-area button { margin: 0; width: auto; }
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .logout-btn { background: #ff4444; padding: 5px 10px; font-size: 12px; width: auto; margin: 0; }
         .logout-btn:hover { background: #cc0000; }
@@ -83,6 +81,7 @@
 <body>
 
 <div class="container">
+    <!-- GİRİŞ EKRANI -->
     <div id="login-screen">
         <h2>İman Power Zeka - Giriş</h2>
         <input type="text" id="login-username" placeholder="Kullanıcı Adı">
@@ -91,6 +90,7 @@
         <div class="toggle-link" onclick="switchScreen('register-screen')">Hesabın yok mu? <span>Kayıt Ol</span></div>
     </div>
 
+    <!-- KAYIT EKRANI -->
     <div id="register-screen" style="display: none;">
         <h2>İman Power Zeka - Kayıt</h2>
         <input type="text" id="reg-username" placeholder="Kullanıcı Adı">
@@ -99,6 +99,7 @@
         <div class="toggle-link" onclick="switchScreen('login-screen')">Zaten üye misin? <span>Giriş Yap</span></div>
     </div>
 
+    <!-- SOHBET EKRANI -->
     <div id="chat-screen">
         <div class="header-area">
             <h3 style="margin:0; color:#00adb5;" id="welcome-user">Merhaba</h3>
@@ -113,14 +114,14 @@
 </div>
 
 <script type="module">
-    // Attığın fotoğraftaki Firebase SDK'ları ve ayarları
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    // image_238982.png dosyasındaki Firebase bilgileri entegre edildi
     const firebaseConfig = {
         apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcolvpqDTBvWuSdrk",
         authDomain: "imanpowerveri.firebaseapp.com",
-        databaseURL: "https://imanpowerveri-default-rtdbe.firebaseio.com",
+        databaseURL: "https://imanpowerveri-default-rtdb.firebaseio.com",
         projectId: "imanpowerveri",
         storageBucket: "imanpowerveri.firebasestorage.app",
         messagingSenderId: "891464029314",
@@ -128,55 +129,107 @@
         measurementId: "G-4T6XSDBDL5"
     };
 
-    // Firebase Başlatma
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     let currentUsername = "";
 
-    // Ekran Değiştirme Fonksiyonu
+    // ==========================================
+    // ⭐ İLERİDE KELİME VE ANLAMLARINI EKLEYECEĞİN BÖLÜM (SÖZLÜK) ⭐
+    // ==========================================
+    const OZEL_SOZLUK = {
+        "merhaba": "Sana da merhaba! Ben İman Power Zeka, senin için buradayım.",
+        "iman": "İman, kalpten inanmak ve güvenmektir. Bu yapay zekanın temel gücüdür!",
+        "nasılsın": "Harikayım! Veritabanım sapasağlam çalışıyor, seni dinliyorum.",
+        "kodlama": "Yazılım geliştirmek bir sanattır. index.html ile harikalar yaratıyoruz!",
+        "github": "Kodlarımızı sakladığımız ve tüm dünyaya açtığımız harika bir platform.",
+        "gelecek": "Gelecek yapay zeka ve İman Power ile çok daha akıllı olacak!"
+    };
+
+    // İki kelime arasındaki harf benzerliğini hesaplayan algoritma (Levenshtein Distance)
+    function getSimilarityScore(str1, str2) {
+        const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+        for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
+        for (let j = 0; j <= str2.length; j += 1) track[j][0] = j;
+        for (let j = 1; j <= str2.length; j += 1) {
+            for (let i = 1; i <= str1.length; i += 1) {
+                const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                track[j][i] = Math.min(
+                    track[j][i - 1] + 1,
+                    track[j - 1][i] + 1,
+                    track[j - 1][i - 1] + indicator
+                );
+            }
+        }
+        return track[str2.length][str1.length];
+    }
+
+    // Yanlış yazılan kelimeleri tespit edip sözlükle eşleştiren fonksiyon
+    function akilliKelimeBulucu(cumle) {
+        const kelimeler = cumle.toLowerCase().split(" ");
+        let bulunanAnlamlar = [];
+        let yakalananKelimeler = [];
+
+        for (let kelime of kelimeler) {
+            if (kelime.length < 3) continue; // Çok kısa harfleri es geç
+
+            let enYakinKelime = "";
+            let enDusukMesafe = 3; // En fazla 2 harf hatasına izin ver
+
+            // Sözlükteki kelimelerle tek tek karşılaştır
+            for (let sozlukKelimesi in OZEL_SOZLUK) {
+                let mesafe = getSimilarityScore(kelime, sozlukKelimesi);
+                if (mesafe < enDusukMesafe) {
+                    enDusukMesafe = mesafe;
+                    enYakinKelime = sozlukKelimesi;
+                }
+            }
+
+            // Eğer yakın bir kelime bulunduysa listeye ekle
+            if (enYakinKelime) {
+                bulunanAnlamlar.push(OZEL_SOZLUK[enYakinKelime]);
+                yakalananKelimeler.push(enYakinKelime.toUpperCase());
+            }
+        }
+
+        if (bulunanAnlamlar.length > 0) {
+            // Kelimeleri yan yana getirip birleştirme alanı
+            let baglac = yakalananKelimeler.join(" ve ");
+            return `🤔 Sanırım ${baglac} hakkında konuşmak istedin. İşte açıklaması:\n\n` + bulunanAnlamlar.join("\n\n");
+        }
+
+        return null;
+    }
+
+    // GİRİŞ / SOHBET EKRAN KONTROLLERİ
     window.switchScreen = function(screenId) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('register-screen').style.display = 'none';
         document.getElementById('chat-screen').style.display = 'none';
-        
-        if(screenId === 'chat-screen') {
-            document.getElementById(screenId).style.display = 'flex';
-        } else {
-            document.getElementById(screenId).style.display = 'block';
-        }
+        if(screenId === 'chat-screen') document.getElementById(screenId).style.display = 'flex';
+        else document.getElementById(screenId).style.display = 'block';
     }
 
-    // KAYIT OLMA FONKSİYONU
     window.register = function() {
         const user = document.getElementById('reg-username').value.trim().toLowerCase();
         const pass = document.getElementById('reg-password').value;
-
         if(!user || !pass) return alert("Lütfen tüm alanları doldurun!");
 
         const dbRef = ref(db);
-        // Kullanıcı adının önceden alınıp alınmadığını kontrol et
         get(child(dbRef, `users/${user}`)).then((snapshot) => {
             if (snapshot.exists()) {
                 alert("Bu kullanıcı adı zaten alınmış!");
             } else {
-                // Kullanıcıyı veritabanına kaydet
-                set(ref(db, 'users/' + user), {
-                    password: pass,
-                    chatHistory: ""
-                }).then(() => {
-                    alert("Kayıt başarıyla tamamlandı! Giriş yapabilirsiniz.");
+                set(ref(db, 'users/' + user), { password: pass, chatHistory: "" }).then(() => {
+                    alert("Kayıt başarılı! Şimdi Giriş Yapabilirsiniz.");
                     switchScreen('login-screen');
                 });
             }
-        });
+        }).catch(err => alert("Kayıt Hatası: " + err.message + "\nLütfen Firebase kurallarını kontrol edin!"));
     }
 
-    // GİRİŞ YAPMA FONKSİYONU
     window.login = function() {
         const user = document.getElementById('login-username').value.trim().toLowerCase();
         const pass = document.getElementById('login-password').value;
-
         if(!user || !pass) return alert("Lütfen tüm alanları doldurun!");
 
         const dbRef = ref(db);
@@ -185,35 +238,27 @@
                 currentUsername = user;
                 document.getElementById('welcome-user').innerText = `Üye: ${user}`;
                 switchScreen('chat-screen');
-                loadChatHistory(); // Eski sohbeti yükle
+                loadChatHistory();
             } else {
                 alert("Hatalı kullanıcı adı veya şifre!");
             }
-        }).catch((error) => {
-            alert("Giriş yapılırken hata oluştu: " + error.message);
-        });
+        }).catch(err => alert("Giriş Hatası: " + err.message + "\nLütfen Firebase kurallarını kontrol edin!"));
     }
 
-    // SOHBET GEÇMİŞİNİ YÜKLEME
     function loadChatHistory() {
         const chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML = ""; // Temizle
-        
+        chatBox.innerHTML = "";
         const dbRef = ref(db);
         get(child(dbRef, `users/${currentUsername}/chatHistory`)).then((snapshot) => {
             if (snapshot.exists() && snapshot.val() !== "") {
                 const history = JSON.parse(snapshot.val());
-                history.forEach(msg => {
-                    appendMessage(msg.text, msg.sender);
-                });
+                history.forEach(msg => appendMessage(msg.text, msg.sender));
             } else {
-                // Hoş geldin mesajı (Yapay zekadan)
-                appendMessage("Merhaba! Ben İman Power Zeka. Size nasıl yardımcı olabilirim?", "ai");
+                appendMessage("Merhaba! Ben İman Power Zeka. Yanlış yazsanız da sizi anlarım! Bana 'mrehaba', 'gthub' veya 'özel kelimelerinizden' yazarak test edin.", "ai");
             }
         });
     }
 
-    // MESAJI EKRANA YAZDIRMA
     function appendMessage(text, sender) {
         const chatBox = document.getElementById('chat-box');
         const msgDiv = document.createElement('div');
@@ -221,48 +266,43 @@
         msgDiv.classList.add(sender === 'user' ? 'user-msg' : 'ai-msg');
         msgDiv.innerText = text;
         chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight; // Otomatik aşağı kaydır
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-    // MESAJ GÖNDERME VE YAPAY ZEKA CEVABI
     window.sendMessage = function() {
         const input = document.getElementById('chat-input');
         const text = input.value.trim();
         if(!text) return;
 
-        // Kullanıcı mesajını ekle
         appendMessage(text, 'user');
         input.value = "";
 
-        // Basit / Geçici Yapay Zeka Cevap Mekanizması (Simülasyon)
-        // Gerçek bir AI API'si (OpenAI, Gemini vb.) bağlayana kadar burası otomatik cevap verir.
         setTimeout(() => {
-            const aiResponse = `[İman Power Zeka]: "${text}" mesajını aldım. Şu an test aşamasındayım!`;
-            appendMessage(aiResponse, 'ai');
-            
-            // Yeni sohbet durumunu Firebase'e kaydet
+            // Akıllı eşleştiriciyi çalıştır (Yanlış harfleri tolere eder)
+            let yapayZekaCevabi = akilliKelimeBulucu(text);
+
+            // Eğer sözlükte yakın bir kelime bulamadıysa standart cevap ver
+            if (!yapayZekaCevabi) {
+                yapayZekaCevabi = `[İman Power Zeka]: "${text}" kelimelerini yan yana getirdim fakat sözlüğümde tam veya yakın bir karşılık bulamadım. İleride beni geliştirebilirsin!`;
+            }
+
+            appendMessage(yapayZekaCevabi, 'ai');
             saveCurrentChat();
-        }, 1000);
+        }, 800);
     }
 
-    // SOHBETİ FIREBASE'E KAYDETME (Kaldığı yerden devam etmesi için)
     function saveCurrentChat() {
         const chatBox = document.getElementById('chat-box');
         const messages = [];
-        
         chatBox.querySelectorAll('.msg').forEach(msgDiv => {
             const sender = msgDiv.classList.contains('user-msg') ? 'user' : 'ai';
             messages.push({ text: msgDiv.innerText, sender: sender });
         });
-
         set(ref(db, `users/${currentUsername}/chatHistory`), JSON.stringify(messages));
     }
 
-    // ÇIKIŞ YAPMA
     window.logout = function() {
         currentUsername = "";
-        document.getElementById('login-username').value = "";
-        document.getElementById('login-password').value = "";
         switchScreen('login-screen');
     }
 </script>
