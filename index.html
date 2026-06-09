@@ -29,7 +29,7 @@
         .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
         .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
 
-        /* --- 3 BÖLÜMLÜ DÜZEN (HİZALAMA DÜZELTİLDİ) --- */
+        /* --- 3 BÖLÜMLÜ DÜZEN --- */
         .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; overflow: hidden; width: 100%; }
 
         /* SOL: DESTEK TALEPLERİ LİSTESİ */
@@ -43,7 +43,7 @@
         .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
         .msg { background: rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 16px; border-left: 4px solid var(--accent); max-width: 85%; line-height: 1.5; word-wrap: break-word; }
 
-        /* SAĞ: ENTEGRE WEB PENCERESİ */
+        /* SAĞ: ENTEGRE DİNAMİK LINK PENCERESİ */
         .web-pane { background: #0f172a; padding: 20px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
         /* --- FORMLAR VE ELEMANLAR --- */
@@ -59,7 +59,7 @@
 
     <div id="auth-screen">
         <div class="auth-card">
-            <img src="logo.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/0f172a/10b981?text=IFC'">
+            <img src="https://0imanpower0.github.io/ImanPower/logo.png" alt="Logo">
             <h2 id="auth-title" style="margin-bottom:20px; font-family:'Orbitron'; color:var(--accent); letter-spacing: 2px;">DESTEK GİRİŞİ</h2>
             <input type="text" id="u-in" placeholder="Kullanıcı Adı">
             <input type="password" id="p-in" placeholder="Şifre">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="top-bar">
-        <div class="logo-box"><img src="logo.png" onerror="this.src='https://placehold.co/45x45/0f172a/10b981?text=IFC'"> <span>İMAN POWER CANLI DESTEK</span></div>
+        <div class="logo-box"><img src="https://0imanpower0.github.io/ImanPower/logo.png"> <span>İMAN POWER CANLI DESTEK</span></div>
         
         <div id="ls-admin-gate" style="display:flex; gap:10px;">
             <input type="password" id="ls-adm-pass" placeholder="Admin Key" style="width:160px; margin:0; padding:8px;">
@@ -99,9 +99,14 @@
         </div>
 
         <div class="web-pane">
-            <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">MEET CANLI BAĞLANTI</h3>
-            <p style="font-size:0.75rem; opacity:0.7; margin-bottom:15px; text-align:center;">Görüntülü veya sesli mülakat odası</p>
-            <iframe src="https://meet.google.com" style="width:100%; flex:1; border:none; border-radius:12px; background:#000;"></iframe>
+            <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">BAĞLANTI PENCERESİ</h3>
+            
+            <div id="admin-link-manager" style="display:none; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px;">
+                <input type="text" id="pane-custom-url" placeholder="Açılacak Linki Yapıştır (https://...)" style="margin-bottom:8px; font-size:0.8rem; padding:8px;">
+                <button class="btn" style="background:#3b82f6; padding:8px; font-size:0.8rem;" onclick="updatePaneURL()">LİNKİ GÜNCELLE</button>
+            </div>
+
+            <iframe id="live-pane-frame" src="about:blank" style="width:100%; flex:1; border:none; border-radius:12px; background:#0f172a;"></iframe>
         </div>
 
     </div>
@@ -124,8 +129,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // EmailJS Kurulumu (Kendi anahtarlarını buraya yazabilirsin başkan)
-        emailjs.init("YOUR_PUBLIC_KEY"); 
+        // Henüz kurmadıysan boş kalabilir, hata vermez
+        try { emailjs.init("YOUR_PUBLIC_KEY"); } catch(e){}
 
         const firebaseConfig = {
             apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcOlvpqDTBvWuSdrk",
@@ -164,12 +169,12 @@
             }
         };
 
-        // ADMIN MODU GİRİŞ-ÇIKIŞ FONKSİYONLARI
         window.verifyLSAdmin = () => {
             if(document.getElementById('ls-adm-pass').value === "imanpoweradmini31") {
                 isLiveSupportAdmin = true;
                 document.getElementById('ls-admin-gate').style.display = 'none';
                 document.getElementById('ls-admin-badge').style.display = 'flex';
+                document.getElementById('admin-link-manager').style.display = 'block';
                 document.getElementById('ls-adm-pass').value = "";
                 alert("Hoş geldin Başkan! Yönetici modu aktif.");
                 refreshTicketList();
@@ -179,8 +184,9 @@
         window.logoutLSAdmin = () => {
             isLiveSupportAdmin = false;
             document.getElementById('ls-admin-badge').style.display = 'none';
+            document.getElementById('admin-link-manager').style.display = 'none';
             document.getElementById('ls-admin-gate').style.display = 'flex';
-            alert("Yönetici modundan çıkış yapıldı, standart kullanıcı moduna dönüldü.");
+            alert("Yönetici modundan çıkış yapıldı.");
             activeTicketId = "";
             document.getElementById('active-ticket-header').innerText = "Lütfen soldan bir destek odası seçin.";
             document.getElementById('support-chat-messages').innerHTML = "";
@@ -188,6 +194,28 @@
         };
 
         window.toggleModal = (show) => { document.getElementById('new-ticket-modal').style.display = show ? 'flex' : 'none'; };
+
+        // ADMİNİN LİNK GÜNCELLEME FONKSİYONU
+        window.updatePaneURL = () => {
+            let url = document.getElementById('pane-custom-url').value.trim();
+            if(!url) return alert("Lütfen geçerli bir link girin!");
+            if(!url.startsWith("http://") && !url.startsWith("https://")) {
+                url = "https://" + url;
+            }
+            set(ref(db, 'panes/current_url'), url).then(() => {
+                alert("Sağ panel linki tüm kullanıcılar için güncellendi!");
+            });
+        };
+
+        // Firebase'den gelen linki dinle ve sağ tarafa anında yansıt
+        onValue(ref(db, 'panes/current_url'), (snap) => {
+            const frame = document.getElementById('live-pane-frame');
+            if(snap.exists()) {
+                frame.src = snap.val();
+            } else {
+                frame.src = "about:blank";
+            }
+        });
 
         window.createTicket = () => {
             const name = document.getElementById('tk-name').value.trim();
@@ -206,15 +234,15 @@
                 }).then(() => {
                     alert("Destek talebi başarıyla açıldı!");
                     
-                    // GMAIL BİLDİRİM GÖNDERİM TETİKLEYİCİSİ
-                    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                        ticket_id: ticketKey,
-                        user_name: name,
-                        user_email: email,
-                        user_phone: phone,
-                        user_birth: birth
-                    }).then(() => { console.log("Başkana mail bildirimi fırlatıldı!"); })
-                    .catch((err) => { console.log("Mail gönderim ayarları eksik:", err); });
+                    try {
+                        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                            ticket_id: ticketKey,
+                            user_name: name,
+                            user_email: email,
+                            user_phone: phone,
+                            user_birth: birth
+                        });
+                    } catch(e) {}
 
                     toggleModal(false);
                 });
@@ -273,7 +301,6 @@
             });
         }
 
-        // İlk açılışta listeyi dinlemeye al
         refreshTicketList();
     </script>
 </body>
