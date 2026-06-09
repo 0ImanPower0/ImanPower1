@@ -17,7 +17,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         /* --- GİRİŞ EKRANI --- */
         #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
@@ -25,11 +25,11 @@
         .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; object-fit: cover; }
 
         /* --- ÜST PANEL --- */
-        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; flex-shrink: 0; }
+        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; flex-shrink: 0; z-index: 999; }
         .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
         .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
 
-        /* --- 3 BÖLÜMLÜ DÜZEN --- */
+        /* --- 3 BÖLÜMLÜ DÜZEN (MASAÜSTÜ) --- */
         .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; overflow: hidden; width: 100%; }
 
         /* SOL: DESTEK TALEPLERİ LİSTESİ */
@@ -39,7 +39,7 @@
         .delete-btn { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; border: none; padding: 4px 8px; font-size: 0.65rem; border-radius: 6px; font-weight: bold; cursor: pointer; z-index: 10; display: none; }
         .delete-btn:hover { background: #b91c1c; }
 
-        /* ORTA: TEMİZ CHAT ALANI */
+        /* ORTA: CHAT ALANI */
         .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; overflow: hidden; }
         .chat-header { padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-weight: bold; color: var(--accent); }
         .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
@@ -55,6 +55,42 @@
         
         .modal { display: none; background: rgba(0,0,0,0.8); position: fixed; inset: 0; z-index: 20000; align-items: center; justify-content: center; }
         .modal-card { background: var(--glass); border: 2px solid var(--accent); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; }
+
+        /* ==========================================================
+           📱 TELEFON VE MOBİL UYUMLULUK AYARLARI (RESPONSIVE)
+           ========================================================== */
+        @media (max-width: 1024px) {
+            body { overflow-y: auto; height: auto; } /* Mobilde tüm sayfa aşağı kayabilsin */
+            .main-layout {
+                display: flex;
+                flex-direction: column; /* Yan yana olan grid düzenini alt alta çevirir */
+                height: auto;
+                overflow: visible;
+            }
+            .top-bar {
+                flex-direction: column;
+                height: auto;
+                gap: 15px;
+                padding: 15px;
+                text-align: center;
+            }
+            .sidebar, .chat-container, .web-pane {
+                width: 100%;
+                height: 500px; /* Her bölüme telefonda rahat görünsün diye sabit boy verdik */
+                border-right: none;
+                border-bottom: 2px solid var(--border);
+            }
+            .chat-messages {
+                padding: 15px;
+            }
+            .auth-card {
+                padding: 25px;
+                width: 95%;
+            }
+            #ls-admin-gate input {
+                width: 120px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -73,7 +109,7 @@
     <div class="top-bar">
         <div class="logo-box"><img src="https://0imanpower0.github.io/ImanPower/logo.png"> <span>İMAN POWER CANLI DESTEK</span></div>
         
-        <div id="ls-admin-gate" style="display:flex; gap:10px;">
+        <div id="ls-admin-gate" style="display:flex; gap:10px; align-items:center;">
             <input type="password" id="ls-adm-pass" placeholder="Admin Key" style="width:160px; margin:0; padding:8px;">
             <button class="btn" style="width:100px; padding:8px; background:#3b82f6;" onclick="verifyLSAdmin()">ADMİN GİRİŞ</button>
         </div>
@@ -103,7 +139,7 @@
         <div class="web-pane">
             <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">BAĞLANTI PENCERESİ</h3>
             
-            <div id="admin-link-manager" style="display:none; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px;">
+            <div id="admin-link-manager" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px; display:none;">
                 <input type="text" id="pane-custom-url" placeholder="Açılacak Linki Yapıştır (Mülakat, Form vb.)" style="margin-bottom:8px; font-size:0.8rem; padding:8px;">
                 <button class="btn" style="background:#3b82f6; padding:8px; font-size:0.8rem;" onclick="updatePaneURL()">LİNKİ GÜNCELLE</button>
             </div>
@@ -293,7 +329,6 @@
                         set(ref(db, 'cooldowns/' + user), { last_ticket_time: now });
                         alert("Destek talebi başarıyla açıldı!");
                         
-                        // BURASI ARTIK DÜZELDİ: template_d9njsw1 yapıldı!
                         try {
                             emailjs.send("service_f49eoyn", "template_d9njsw1", {
                                 ticket_id: ticketKey,
