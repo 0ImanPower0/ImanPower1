@@ -102,11 +102,14 @@
             <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">BAĞLANTI PENCERESİ</h3>
             
             <div id="admin-link-manager" style="display:none; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px;">
-                <input type="text" id="pane-custom-url" placeholder="Açılacak Linki Yapıştır (https://...)" style="margin-bottom:8px; font-size:0.8rem; padding:8px;">
+                <input type="text" id="pane-custom-url" placeholder="Açılacak Linki Yapıştır (Mülakat, Form vb.)" style="margin-bottom:8px; font-size:0.8rem; padding:8px;">
                 <button class="btn" style="background:#3b82f6; padding:8px; font-size:0.8rem;" onclick="updatePaneURL()">LİNKİ GÜNCELLE</button>
             </div>
 
-            <iframe id="live-pane-frame" src="about:blank" style="width:100%; flex:1; border:none; border-radius:12px; background:#0f172a;"></iframe>
+            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+                <iframe id="live-pane-frame" src="about:blank" style="width:100%; flex:1; border:none; border-radius:12px; background:#0f172a;"></iframe>
+                <a id="pane-direct-link" href="#" target="_blank" class="btn" style="background:#3b82f6; font-size:0.8rem; padding:10px; text-align:center; display:none; text-decoration:none;">LİNKİ YENİ SEKMEDE AÇ 🚀</a>
+            </div>
         </div>
 
     </div>
@@ -129,8 +132,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Henüz kurmadıysan boş kalabilir, hata vermez
-        try { emailjs.init("YOUR_PUBLIC_KEY"); } catch(e){}
+        // GÖRSELDEKİ BİLGİLERİNİ DOĞRUDAN SİSTEME ENTEGRE ETTİM BAŞKAN
+        try { emailjs.init("jRukwmEqAxg2KHhxg"); } catch(e){}
 
         const firebaseConfig = {
             apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcOlvpqDTBvWuSdrk",
@@ -195,7 +198,7 @@
 
         window.toggleModal = (show) => { document.getElementById('new-ticket-modal').style.display = show ? 'flex' : 'none'; };
 
-        // ADMİNİN LİNK GÜNCELLEME FONKSİYONU
+        // ADMİNİN SAĞA LİNK KOYMASINI SAĞLAYAN DİNAMİK SİSTEM
         window.updatePaneURL = () => {
             let url = document.getElementById('pane-custom-url').value.trim();
             if(!url) return alert("Lütfen geçerli bir link girin!");
@@ -204,16 +207,22 @@
             }
             set(ref(db, 'panes/current_url'), url).then(() => {
                 alert("Sağ panel linki tüm kullanıcılar için güncellendi!");
+                document.getElementById('pane-custom-url').value = "";
             });
         };
 
-        // Firebase'den gelen linki dinle ve sağ tarafa anında yansıt
+        // Firebase'den link gelince sağ panele basan sistem
         onValue(ref(db, 'panes/current_url'), (snap) => {
             const frame = document.getElementById('live-pane-frame');
-            if(snap.exists()) {
-                frame.src = snap.val();
+            const directBtn = document.getElementById('pane-direct-link');
+            if(snap.exists() && snap.val() !== "") {
+                const targetUrl = snap.val();
+                frame.src = targetUrl;
+                directBtn.href = targetUrl;
+                directBtn.style.display = 'block'; // Güvenlik engelini aşmak için buton da açılır
             } else {
                 frame.src = "about:blank";
+                directBtn.style.display = 'none';
             }
         });
 
@@ -234,15 +243,16 @@
                 }).then(() => {
                     alert("Destek talebi başarıyla açıldı!");
                     
+                    // HAZIRLADIĞIMIZ SİSTEM MAİLİ ANINDA TELEFONUNA VE MAİLİNE FIRLATIR
                     try {
-                        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                        emailjs.send("service_f49eoyn", "template_6v459io", {
                             ticket_id: ticketKey,
                             user_name: name,
                             user_email: email,
                             user_phone: phone,
                             user_birth: birth
                         });
-                    } catch(e) {}
+                    } catch(e) { console.log(e); }
 
                     toggleModal(false);
                 });
