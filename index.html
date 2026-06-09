@@ -34,8 +34,10 @@
 
         /* SOL: DESTEK TALEPLERİ LİSTESİ */
         .sidebar { background: #0f172a; border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; }
-        .ticket-item { padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .ticket-item { padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: 0.2s; position: relative; }
         .ticket-item:hover, .ticket-item.active { border-color: var(--accent); background: rgba(16, 185, 129, 0.1); }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; border: none; padding: 4px 8px; font-size: 0.65rem; border-radius: 6px; font-weight: bold; cursor: pointer; z-index: 10; display: none; }
+        .delete-btn:hover { background: #b91c1c; }
 
         /* ORTA: TEMİZ CHAT ALANI */
         .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; overflow: hidden; }
@@ -130,7 +132,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         try { emailjs.init("jRukwmEqAxg2KHhxg"); } catch(e){}
 
@@ -168,7 +170,7 @@
                     if(snap.exists() && snap.val().password === password) { 
                         user = username; 
                         document.getElementById('auth-screen').style.display = 'none'; 
-                        refreshTicketList(); // Giriş yapılınca bilet listesini yenile
+                        refreshTicketList();
                     }
                     else alert("Hatalı Giriş!");
                 }, { onlyOnce: true });
@@ -227,6 +229,24 @@
             }
         });
 
+        // ADMİN İÇİN BİLET SİLME FONKSİYONU
+        window.deleteTicket = (ticketId, event) => {
+            event.stopPropagation(); // Tıklayınca biletin içine girmesini engelle
+            if(!isLiveSupportAdmin) return;
+            if(confirm(`${ticketId} talebini ve tüm mesaj geçmişini kalıcı olarak silmek istiyor musunuz?`)) {
+                remove(ref(db, 'support_tickets/' + ticketId)).then(() => {
+                    remove(ref(db, 'support_chats/' + ticketId)).then(() => {
+                        alert("Destek talebi başarıyla silindi!");
+                        if(activeTicketId === ticketId) {
+                            activeTicketId = "";
+                            document.getElementById('active-ticket-header').innerText = "Lütfen soldan bir destek odası seçin.";
+                            document.getElementById('support-chat-messages').innerHTML = "";
+                        }
+                    });
+                });
+            }
+        };
+
         window.createTicket = () => {
             const name = document.getElementById('tk-name').value.trim();
             const email = document.getElementById('tk-email').value.trim();
@@ -235,27 +255,48 @@
 
             if(!name || !email || !phone || !birth) return alert("Lütfen tüm alanları doldurun!");
 
-            onValue(ref(db, 'support_tickets'), (snap) => {
-                const count = snap.exists() ? Object.keys(snap.val()).length + 1 : 1;
-                const ticketKey = `Destek ${count}`;
+            // 1 SAATLİK SÜRE SINIRI KONTROLÜ
+            onValue(ref(db, 'cooldowns/' + user), (cooldownSnap) => {
+                const now = Date.now();
+                if(cooldownSnap.exists()) {
+                    const lastTime = cooldownSnap.val().last_ticket_time;
+                    const diffMs = now - lastTime;
+                    const oneHourMs = 60 * 60 * 1000;
 
-                set(ref(db, 'support_tickets/' + ticketKey), {
-                    label: ticketKey, name, email, phone, birth, creator: user, timestamp: Date.now()
-                }).then(() => {
-                    alert("Destek talebi başarıyla açıldı!");
-                    
-                    try {
-                        emailjs.send("service_f49eoyn", "template_6v459io", {
-                            ticket_id: ticketKey,
-                            user_name: name,
-                            user_email: email,
-                            user_phone: phone,
-                            user_birth: birth
-                        });
-                    } catch(e) { console.log(e); }
+                    if(diffMs < oneHourMs) {
+                        const remainingMin = Math.ceil((oneHourMs - diffMs) / (60 * 1000));
+                        alert(`Hata: Saatte sadece 1 kez destek talebi açabilirsiniz! Tekrar açabilmek için ${remainingMin} dakika beklemelisiniz.`);
+                        return;
+                    }
+                }
 
-                    toggleModal(false);
-                });
+                // Sınırı aşmadıysa yeni bileti oluştur
+                onValue(ref(db, 'support_tickets'), (snap) => {
+                    const count = snap.exists() ? Object.keys(snap.val()).length + 1 : 1;
+                    const ticketKey = `Destek ${count}`;
+
+                    set(ref(db, 'support_tickets/' + ticketKey), {
+                        label: ticketKey, name, email, phone, birth, creator: user, timestamp: now
+                    }).then(() => {
+                        // Cooldown (Bekleme süresi) kaydet
+                        set(ref(db, 'cooldowns/' + user), { last_ticket_time: now });
+                        
+                        alert("Destek talebi başarıyla açıldı!");
+                        
+                        try {
+                            emailjs.send("service_f49eoyn", "template_6v459io", {
+                                ticket_id: ticketKey,
+                                user_name: name,
+                                user_email: email,
+                                user_phone: phone,
+                                user_birth: birth
+                            });
+                        } catch(e) { console.log(e); }
+
+                        toggleModal(false);
+                    });
+                }, { onlyOnce: true });
+
             }, { onlyOnce: true });
         };
 
@@ -293,27 +334,33 @@
             }).then(() => { input.value = ''; });
         };
 
-        // KULLANICILARIN ESKİ DESTEKLERİNİ HER ZAMAN GÖRMESİNİ SAĞLAYAN CANLI DİNLEYİCİ FONKSİYONU
         function refreshTicketList() {
             onValue(ref(db, 'support_tickets'), (snap) => {
                 const tkContainer = document.getElementById('support-tickets-container');
                 tkContainer.innerHTML = "";
                 if(snap.exists()) {
                     Object.entries(snap.val()).forEach(([key, val]) => {
-                        // Eğer admin değilse ve bu biletin yaratıcısı (creator) giriş yapmış kullanıcı değilse listeleme yapma
                         if(!isLiveSupportAdmin && val.creator !== user) return;
 
                         tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}" id="tk-item-${key}" onclick="selectTicket('${key}')">
+                            <button class="delete-btn" id="del-btn-${key}" onclick="deleteTicket('${key}', event)">❌ SİL</button>
                             <div style="font-weight:900; color:var(--accent); font-family:'Orbitron'; font-size:0.85rem;">📌 ${key}</div>
                             <div style="font-size:0.75rem; margin-top:4px;">İsim: ${val.name}</div>
                             <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">Gmail: ${val.email}</div>
                         </div>`;
+
+                        // Admin giriş yaptıysa silme butonlarını görünür yap
+                        if(isLiveSupportAdmin) {
+                            setTimeout(() => {
+                                const dBtn = document.getElementById(`del-btn-${key}`);
+                                if(dBtn) dBtn.style.display = 'block';
+                            }, 50);
+                        }
                     });
                 }
             });
         }
 
-        // İlk açılışta çalıştır
         refreshTicketList();
     </script>
 </body>
