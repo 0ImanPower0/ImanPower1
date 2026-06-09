@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İman Power FC | 7/24 Canlı Destek Merkezi</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --bg: #020617;
@@ -16,20 +17,20 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
         /* --- GİRİŞ EKRANI --- */
         #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .auth-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 2px solid var(--accent); text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 40px var(--accent-glow); }
-        .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; }
+        .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; object-fit: cover; }
 
         /* --- ÜST PANEL --- */
-        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; flex-shrink: 0; }
         .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
-        .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); }
+        .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
 
-        /* --- 3 BÖLÜMLÜ DÜZEN --- */
-        .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; }
+        /* --- 3 BÖLÜMLÜ DÜZEN (HİZALAMA DÜZELTİLDİ) --- */
+        .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; overflow: hidden; width: 100%; }
 
         /* SOL: DESTEK TALEPLERİ LİSTESİ */
         .sidebar { background: #0f172a; border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; }
@@ -37,13 +38,13 @@
         .ticket-item:hover, .ticket-item.active { border-color: var(--accent); background: rgba(16, 185, 129, 0.1); }
 
         /* ORTA: TEMİZ CHAT ALANI */
-        .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; }
+        .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; overflow: hidden; }
         .chat-header { padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-weight: bold; color: var(--accent); }
         .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { background: rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 16px; border-left: 4px solid var(--accent); max-width: 85%; line-height: 1.5; }
+        .msg { background: rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 16px; border-left: 4px solid var(--accent); max-width: 85%; line-height: 1.5; word-wrap: break-word; }
 
-        /* SAĞ: ENTEGRE WEB PENCERESİ (GOOGLE MEET) */
-        .web-pane { background: #0f172a; padding: 20px; display: flex; flex-direction: column; height: 100%; }
+        /* SAĞ: ENTEGRE WEB PENCERESİ */
+        .web-pane { background: #0f172a; padding: 20px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
         /* --- FORMLAR VE ELEMANLAR --- */
         input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #1e293b; background: #020617; color: white; }
@@ -58,7 +59,7 @@
 
     <div id="auth-screen">
         <div class="auth-card">
-            <img src="logo.png" alt="Logo">
+            <img src="logo.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/0f172a/10b981?text=IFC'">
             <h2 id="auth-title" style="margin-bottom:20px; font-family:'Orbitron'; color:var(--accent); letter-spacing: 2px;">DESTEK GİRİŞİ</h2>
             <input type="text" id="u-in" placeholder="Kullanıcı Adı">
             <input type="password" id="p-in" placeholder="Şifre">
@@ -68,12 +69,17 @@
     </div>
 
     <div class="top-bar">
-        <div class="logo-box"><img src="logo.png"> <span>İMAN POWER CANLI DESTEK</span></div>
+        <div class="logo-box"><img src="logo.png" onerror="this.src='https://placehold.co/45x45/0f172a/10b981?text=IFC'"> <span>İMAN POWER CANLI DESTEK</span></div>
+        
         <div id="ls-admin-gate" style="display:flex; gap:10px;">
             <input type="password" id="ls-adm-pass" placeholder="Admin Key" style="width:160px; margin:0; padding:8px;">
             <button class="btn" style="width:100px; padding:8px; background:#3b82f6;" onclick="verifyLSAdmin()">ADMİN GİRİŞ</button>
         </div>
-        <span id="ls-admin-badge" style="color:#38bdf8; font-weight:bold; display:none; font-family:'Orbitron';">🛠️ YÖNETİCİ (BAŞKAN) MODU</span>
+        
+        <div id="ls-admin-badge" style="display:none; align-items:center; gap:15px;">
+            <span style="color:#38bdf8; font-weight:bold; font-family:'Orbitron';">🛠️ YÖNETİCİ MODU</span>
+            <button class="btn" style="background:#ef4444; padding:6px 12px; font-size:0.75rem; width:auto;" onclick="logoutLSAdmin()">ÇIKIŞ YAP</button>
+        </div>
     </div>
 
     <div class="main-layout">
@@ -118,6 +124,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // EmailJS Kurulumu (Kendi anahtarlarını buraya yazabilirsin başkan)
+        emailjs.init("YOUR_PUBLIC_KEY"); 
+
         const firebaseConfig = {
             apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcOlvpqDTBvWuSdrk",
             authDomain: "imanpowerveri.firebaseapp.com",
@@ -155,13 +164,27 @@
             }
         };
 
+        // ADMIN MODU GİRİŞ-ÇIKIŞ FONKSİYONLARI
         window.verifyLSAdmin = () => {
             if(document.getElementById('ls-adm-pass').value === "imanpoweradmini31") {
                 isLiveSupportAdmin = true;
                 document.getElementById('ls-admin-gate').style.display = 'none';
-                document.getElementById('ls-admin-badge').style.display = 'inline-block';
-                alert("Hoş geldin Başkan! Tüm destek kanalları açıldı.");
+                document.getElementById('ls-admin-badge').style.display = 'flex';
+                document.getElementById('ls-adm-pass').value = "";
+                alert("Hoş geldin Başkan! Yönetici modu aktif.");
+                refreshTicketList();
             } else { alert("Hatalı Admin Şifresi!"); }
+        };
+
+        window.logoutLSAdmin = () => {
+            isLiveSupportAdmin = false;
+            document.getElementById('ls-admin-badge').style.display = 'none';
+            document.getElementById('ls-admin-gate').style.display = 'flex';
+            alert("Yönetici modundan çıkış yapıldı, standart kullanıcı moduna dönüldü.");
+            activeTicketId = "";
+            document.getElementById('active-ticket-header').innerText = "Lütfen soldan bir destek odası seçin.";
+            document.getElementById('support-chat-messages').innerHTML = "";
+            refreshTicketList();
         };
 
         window.toggleModal = (show) => { document.getElementById('new-ticket-modal').style.display = show ? 'flex' : 'none'; };
@@ -182,6 +205,17 @@
                     label: ticketKey, name, email, phone, birth, creator: user, timestamp: Date.now()
                 }).then(() => {
                     alert("Destek talebi başarıyla açıldı!");
+                    
+                    // GMAIL BİLDİRİM GÖNDERİM TETİKLEYİCİSİ
+                    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                        ticket_id: ticketKey,
+                        user_name: name,
+                        user_email: email,
+                        user_phone: phone,
+                        user_birth: birth
+                    }).then(() => { console.log("Başkana mail bildirimi fırlatıldı!"); })
+                    .catch((err) => { console.log("Mail gönderim ayarları eksik:", err); });
+
                     toggleModal(false);
                 });
             }, { onlyOnce: true });
@@ -221,23 +255,26 @@
             }).then(() => { input.value = ''; });
         };
 
-        // REAL-TIME VERİ TABANI DİNLEME (SOL LİSTEYİ GÜNCELLEME)
-        onValue(ref(db, 'support_tickets'), (snap) => {
-            const tkContainer = document.getElementById('support-tickets-container');
-            tkContainer.innerHTML = "";
-            if(snap.exists()) {
-                Object.entries(snap.val()).forEach(([key, val]) => {
-                    // Admin değilse ve bilet başkasınaysa gösterme gizliliği
-                    if(!isLiveSupportAdmin && val.creator !== user) return;
+        function refreshTicketList() {
+            onValue(ref(db, 'support_tickets'), (snap) => {
+                const tkContainer = document.getElementById('support-tickets-container');
+                tkContainer.innerHTML = "";
+                if(snap.exists()) {
+                    Object.entries(snap.val()).forEach(([key, val]) => {
+                        if(!isLiveSupportAdmin && val.creator !== user) return;
 
-                    tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}" id="tk-item-${key}" onclick="selectTicket('${key}')">
-                        <div style="font-weight:900; color:var(--accent); font-family:'Orbitron'; font-size:0.85rem;">📌 ${key}</div>
-                        <div style="font-size:0.75rem; margin-top:4px;">İsim: ${val.name}</div>
-                        <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">Gmail: ${val.email}</div>
-                    </div>`;
-                });
-            }
-        });
+                        tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}" id="tk-item-${key}" onclick="selectTicket('${key}')">
+                            <div style="font-weight:900; color:var(--accent); font-family:'Orbitron'; font-size:0.85rem;">📌 ${key}</div>
+                            <div style="font-size:0.75rem; margin-top:4px;">İsim: ${val.name}</div>
+                            <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">Gmail: ${val.email}</div>
+                        </div>`;
+                    });
+                }
+            });
+        }
+
+        // İlk açılışta listeyi dinlemeye al
+        refreshTicketList();
     </script>
 </body>
 </html>
