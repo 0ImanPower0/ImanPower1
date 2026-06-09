@@ -3,585 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İman Power Zeka v4 - Pro Edition</title>
+    <title>İman Power FC | 7/24 Canlı Destek Merkezi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: rgba(20, 27, 45, 0.75);
-            --primary-neon: #00f2fe;
-            --secondary-neon: #4facfe;
-            --text-color: #f1f5f9;
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.95);
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.5);
+            --text: #f8fafc;
+            --border: rgba(16, 185, 129, 0.3);
         }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at center, #1e2640 0%, var(--bg-color) 100%);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 24px;
-            border: 1px solid rgba(0, 242, 254, 0.15);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.05);
-            backdrop-filter: blur(16px);
-            box-sizing: border-box;
-            transition: all 0.4s ease;
-        }
+        /* --- GİRİŞ EKRANI --- */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .auth-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 2px solid var(--accent); text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 40px var(--accent-glow); }
+        .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; }
 
-        h2 { 
-            text-align: center; 
-            background: linear-gradient(135deg, var(--primary-neon), var(--secondary-neon));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-top: 0;
-            font-size: 26px;
-            letter-spacing: 1px;
-        }
+        /* --- ÜST PANEL --- */
+        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+        .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
+        .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); }
 
-        input {
-            width: 100%;
-            padding: 14px 16px;
-            margin: 10px 0;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(10, 15, 26, 0.8);
-            color: #fff;
-            box-sizing: border-box;
-            font-size: 15px;
-            transition: 0.3s;
-        }
+        /* --- 3 BÖLÜMLÜ DÜZEN --- */
+        .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary-neon);
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
-        }
+        /* SOL: DESTEK TALEPLERİ LİSTESİ */
+        .sidebar { background: #0f172a; border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; }
+        .ticket-item { padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .ticket-item:hover, .ticket-item.active { border-color: var(--accent); background: rgba(16, 185, 129, 0.1); }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--secondary-neon), var(--primary-neon));
-            border: none;
-            color: #0b0f19;
-            font-weight: 700;
-            border-radius: 12px;
-            cursor: pointer;
-            margin-top: 12px;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
-        }
+        /* ORTA: TEMİZ CHAT ALANI */
+        .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; }
+        .chat-header { padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-weight: bold; color: var(--accent); }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { background: rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 16px; border-left: 4px solid var(--accent); max-width: 85%; line-height: 1.5; }
 
-        button:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
-        }
+        /* SAĞ: ENTEGRE WEB PENCERESİ (GOOGLE MEET) */
+        .web-pane { background: #0f172a; padding: 20px; display: flex; flex-direction: column; height: 100%; }
 
-        .toggle-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #94a3b8;
-            cursor: pointer;
-        }
-
-        .toggle-link span { color: var(--primary-neon); font-weight: 600; }
+        /* --- FORMLAR VE ELEMANLAR --- */
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #1e293b; background: #020617; color: white; }
+        .btn { padding: 14px; border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; background: var(--accent); width: 100%; transition: 0.3s; text-transform: uppercase; }
+        .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px var(--accent-glow); }
         
-        #chat-screen { display: none; height: 82vh; flex-direction: column; }
-        
-        #chat-box {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            background: rgba(10, 15, 26, 0.6);
-            margin-bottom: 15px;
-            scroll-behavior: smooth;
-        }
-
-        #chat-box::-webkit-scrollbar { width: 5px; }
-        #chat-box::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.2); border-radius: 10px; }
-
-        .msg { 
-            margin: 12px 0; 
-            padding: 12px 16px; 
-            border-radius: 16px; 
-            max-width: 85%; 
-            line-height: 1.5;
-            font-size: 15px;
-            word-wrap: break-word; 
-            white-space: pre-line;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .user-msg { 
-            background: linear-gradient(135deg, #1e293b, #0f172a); 
-            margin-left: auto; 
-            border-bottom-right-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .ai-msg { 
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.05)); 
-            margin-right: auto; 
-            border-bottom-left-radius: 4px;
-            border: 1px solid rgba(0, 242, 254, 0.15);
-        }
-
-        .chat-input-area { display: flex; gap: 10px; }
-        .chat-input-area input { margin: 0; }
-        .chat-input-area button { margin: 0; width: auto; padding: 0 24px; }
-        
-        .header-area { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 10px;
-        }
-        
-        .logout-btn { 
-            background: linear-gradient(135deg, #ff416c, #ff4b2b); 
-            color: white;
-            padding: 6px 14px; 
-            font-size: 13px; 
-            width: auto; 
-            margin: 0;
-            box-shadow: none;
-        }
+        .modal { display: none; background: rgba(0,0,0,0.8); position: fixed; inset: 0; z-index: 20000; align-items: center; justify-content: center; }
+        .modal-card { background: var(--glass); border: 2px solid var(--accent); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-container">
-    <!-- GİRİŞ EKRANI -->
-    <div id="login-screen">
-        <h2>İman Power Zeka</h2>
-        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Geleceğin Akıllı Bilgi Sistemi</p>
-        <input type="text" id="login-username" placeholder="Kullanıcı Adı">
-        <input type="password" id="login-password" placeholder="Şifre">
-        <button onclick="login()">Sisteme Giriş Yap</button>
-        <div class="toggle-link" onclick="switchScreen('register-screen')">Aramıza katılmak ister misin? <span>Kayıt Ol</span></div>
-    </div>
-
-    <!-- KAYIT EKRANI -->
-    <div id="register-screen" style="display: none;">
-        <h2>Yeni Profil Oluştur</h2>
-        <p style="text-align: center; color: #64748b; font-size: 14px; margin-top: -8px;">Verilerin Güvenle Saklanacak</p>
-        <input type="text" id="reg-username" placeholder="Kullanıcı Adı Belirle">
-        <input type="password" id="reg-password" placeholder="Güçlü Bir Şifre">
-        <button onclick="register()">Hesabı Oluştur</button>
-        <div class="toggle-link" onclick="switchScreen('login-screen')">Zaten bir hesabın var mı? <span>Giriş Yap</span></div>
-    </div>
-
-    <!-- SOHBET EKRANI -->
-    <div id="chat-screen">
-        <div class="header-area">
-            <h3 style="margin:0; font-size: 16px; color: var(--primary-neon);" id="welcome-user">Kullanıcı</h3>
-            <button class="logout-btn" onclick="logout()">Güvenli Çıkış</button>
-        </div>
-        <div id="chat-box"></div>
-        <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Aynı anda birden çok şey sorun (örn: hücre ve espri)..." onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button onclick="sendMessage()">Gönder</button>
+    <div id="auth-screen">
+        <div class="auth-card">
+            <img src="logo.png" alt="Logo">
+            <h2 id="auth-title" style="margin-bottom:20px; font-family:'Orbitron'; color:var(--accent); letter-spacing: 2px;">DESTEK GİRİŞİ</h2>
+            <input type="text" id="u-in" placeholder="Kullanıcı Adı">
+            <input type="password" id="p-in" placeholder="Şifre">
+            <button class="btn" id="auth-btn" onclick="handleAuth()">GİRİŞ YAP</button>
+            <p id="toggle-auth-text" style="margin-top:20px; font-size:0.85rem; cursor:pointer; color:var(--accent);" onclick="toggleAuthMode()">Hesabın yok mu? Kayıt Ol</p>
         </div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <div class="top-bar">
+        <div class="logo-box"><img src="logo.png"> <span>İMAN POWER CANLI DESTEK</span></div>
+        <div id="ls-admin-gate" style="display:flex; gap:10px;">
+            <input type="password" id="ls-adm-pass" placeholder="Admin Key" style="width:160px; margin:0; padding:8px;">
+            <button class="btn" style="width:100px; padding:8px; background:#3b82f6;" onclick="verifyLSAdmin()">ADMİN GİRİŞ</button>
+        </div>
+        <span id="ls-admin-badge" style="color:#38bdf8; font-weight:bold; display:none; font-family:'Orbitron';">🛠️ YÖNETİCİ (BAŞKAN) MODU</span>
+    </div>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcolvpqDTBvWuSdrk",
-        authDomain: "imanpowerveri.firebaseapp.com",
-        databaseURL: "https://imanpowerveri-default-rtdb.firebaseio.com",
-        projectId: "imanpowerveri",
-        storageBucket: "imanpowerveri.firebasestorage.app",
-        messagingSenderId: "891464029314",
-        appId: "1:891464029314:web:581bd3b2ed3d7c6af2d09b",
-        measurementId: "G-4T6XSDBDL5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    let currentUsername = "";
-
-    // ==========================================
-    // 🧠 TÜM KELİMELERİN VE KONULARIN BİRLEŞTİĞİ SÖZLÜK 🧠
-    // ==========================================
-    const OZEL_SOZLUK = {
-        // --- 7. SINIF MATEMATİK ---
-       "tam sayılar": "🔢 [7. Sınıf Matematik - Tam Sayılarla İşlemler]\n\nTam sayılar ($Z$) dünyasında hata yapmamak için şu altın kuralları adın gibi bilmelisin:\n\n1. Toplama ve Çıkarma: Zıt işaretlilerde büyükten küçüğü çıkar, büyüğün işaretini yapıştır! Çıkarma işleminde ise çıkarma eksisini ve önündeki sayının işaretini mutlaka TERSİNE çevirip toplamaya dönüştür: $a - (-b) = a + b$.\n2. Çarpma ve Bölme (Dost/Düşman Kuralı): Aynı işaretliler (+), zıt işaretliler (-) olur.\n3. Üslü Nicelikler: Pozitif sayıların tüm kuvvetleri pozitifken, NEGATİF sayıların çift kuvvetleri POZİTİF (parantez varsa!), tek kuvvetleri ise NEGATİF olur. Dikkat: $-3^2 = -9$ iken $(-3)^2 = +9$'dur! Parantez tuzağına düşme!",
-        "rasyonel sayılar": "🧮 [7. Sınıf Matematik - Rasyonel Sayılar ve Ondalık Gösterim]\n\nPayı ve paydası tam sayı olan ($b \\neq 0$ olmak üzere) $a/b$ biçimindeki sayılardır. Sınav Taktikleri:\n\n1. Ondalık Yapma: Paydayı 10, 100 veya 1000 yapmalısın. Yapamıyorsan payı paydaya direkt böl!\n2. Devirli Ondalık Kesir Formülü: $\\frac{\\text{Sayının Tamamı} - \\text{Devretmeyen Kısım}}{\\text{Virgülden Sonra Devreden Kadar 9, Devretmeyen Kadar 0}}$\n3. Sıralama: Paylar eşitse paydası KÜÇÜK olan büyüktür (pasta dilimi mantığı). Paydalar eşitse payı BÜYÜK olan büyüktür. Negatif sayılarda önce pozitif gibi sırala, sonra işareti ve yönü tamamen TERS çevir!",
-        "rasyonel sayılarla işlemler": "🎯 [7. Sınıf Matematik - Rasyonel Sayılarda İşlem Taktikleri]\n\nToplama-Çıkarma yapacaksan paydaları eşitlemek FARZDIR! Çarpma yaparken pay ile payı, payda ile paydayı çarp; işlem öncesi mutlaka sadeleştirme ara. Bölme işleminde ise ilk kesri AYNEN YAZ, ikinci kesri TERS ÇEVİR ÇARP!\n⚠️ Çok Adımlı İşlemler (Merdivenli Sorular): Her zaman en ana kesir çizgisinin altındaki veya üstündeki en küçük, en uç işlemden başlayarak adım adım ana çizgiye doğru tırman.",
-        "cebirsel ifadeler": "🧬 [7. Sınıf Matematik - Cebirsel İfadeler ve Modelleme]\n\nEn az bir bilinmeyen ($x, y, a$) içeren ifadelerdir. Toplama ve çıkarma yaparken sadece BENZER TERİMLERİ (yani bilinmeyeni ve kuvveti tamamen aynı olanları) kendi arasında toplayıp çıkarabilirsin. Örneğin: $3x + 5 + 2x - 1 = 5x + 4$. Bir doğal sayıyı cebirsel ifadeyle çarparken, sayıyı parantez içindeki her bir terimle TEK TEK dağıtarak çarpmalısın: $3(2x - 4) = 6x - 12$. Sınavlarda kare ve dikdörtgen şeklindeki cebirsel karolarla modelleme soruları çok sevilir!",
-        "eşitlik ve denklem": "⚖️ [7. Sınıf Matematik - Denklem Çözme Sanatı]\n\nDenklem çözerken tek bir kutsal amacımız var: Bilinmeyeni ($x$) yalnız bırakmak! Terazi dengesini bozmamak için sol tarafa ne yapıyorsan sağ tarafa da aynısını yapmalısın. Pratik Yol: Bilinenler bir tarafa, bilinmeyenler diğer tarafa toplanır. Bir terim eşitliğin karşı tarafına geçerken mutlaka İŞARET DEĞİŞTİRİR (+ ise -, - ise + olur). En son adımda her iki tarafı da $x$'in önündeki sayıya bölerek sonuca ulaşırsın.",
-        "oran orantı": "📊 [7. Sınıf Matematik - Doğru ve Ters Orantı]\n\nİki çokluktan biri artarken diğeri de aynı oranda artıyorsa DOĞRU ORANTI vardır ve veriler karşılıklı bölünür (Çapraz Çarpım yapılır: $a \\cdot d = b \\cdot c$). Biri artarken diğeri aynı oranda azalıyorsa TERS ORANTI vardır ve veriler karşılıklı çarpılır (Yan Yana Çarpım yapılır: $a \\cdot b = c \\cdot d$). Havuz, işçi ve dişli çark soruları her zaman ters orantıdır; unutma!",
-        "yüzdeler": "📈 [7. Sınıf Matematik - Yüzde Problemleri ve Kâr-Zarar]\n\nBir sayının %A'sını bulmak için sayıyı $\\frac{A}{100}$ ile çarparız. \n💡 Sınav İpucu: %20 kârlı satış fiyatı diyorsa, malın fiyatını direkt %120 olarak hesapla. %15 indirimli (iskontolu) fiyat diyorsa, malın fiyatını direkt %85 olarak bul. Mağazalardaki 'İndirim üzerinden indirim' sorularında yüzdeleri sakın toplama! Önce ilk indirimi yap, çıkan yeni fiyat üzerinden ikinci indirimi hesapla.",
-        "geometri": "📐 [7. Sınıf Matematik - Doğrular ve Açılar]\n\nParalel iki doğrunun bir kesenle yaptığı açılarda harf kuralları hayat kurtarır:\n- Z Kuralı (İç Ters Açılar): Köşelerdeki açılar birbirine eşittir.\n- U Kuralı (Karşı Konumlu Açılar): İç taraftaki iki açının toplamı her zaman $180^\\circ$ yapar.\n- M Kuralı: Sol tarafa bakan açıların toplamı, sağ tarafa bakan açının değerine eşittir.\n- Roket / Kalem Ucu Kuralı: İçerideki 3 açının toplamı $360^\\circ$ eder.",
-        "çokgenler": "🔷 [7. Sınıf Matematik - Çokgenler ve Alan Formülleri]\n\n$n$ kenarlı bir dışbükey çokgende:\n- İç açılar toplamı: $(n-2) \\cdot 180^\\circ$\n- Bir köşeden çizilebilecek köşegen sayısı: $n-3$\n- Bir dış açısı (düzgün çokgende): $\\frac{360^\\circ}{n}$\n📐 Alan Formülleri:\n- Eşkenar Dörtgenin Alanı: $\\frac{e \\cdot f}{2}$ (Köşegenlerin çarpımının yarısı) veya $\\text{Taban} \\cdot \\text{Yükseklik}$.\n- Yamuğun Alanı: $\\frac{(\\text{Alt Taban} + \\text{Üst Taban}) \\cdot \\text{Yükseklik}}{2}$.",
-        "çember ve daire": "⭕ [7. Sınıf Matematik - Çemberin Çevresi ve Dairenin Alanı]\n\nMerkez açının gördüğü yay, merkez açının kendi ölçüsüne eşittir. $\\pi$ (Pi) sayısına dikkat et!\n- Çemberin Çevresi: $2 \\cdot \\pi \\cdot r$\n- Belirli bir yay parçasının uzunluğu: $2 \\cdot \\pi \\cdot r \\cdot \\frac{\\alpha}{360^\\circ}$\n- Dairenin Alanı: $\\pi \\cdot r^2$\n- Daire Diliminin Alanı: $\\pi \\cdot r^2 \\cdot \\frac{\\alpha}{360^\\circ}$ (Buradaki $\\alpha$ merkez açıdır).",
-        "veri analizi": "📊 [7. Sınıf Matematik - Veri Analizi ve İstatistik]\n\nÇizgi grafiki zamana bağlı değişimleri, Sütun grafiği farklı verileri karşılaştırmak için, Daire grafiği ise bir bütünün parçalarını göstermek için en uygundur. \n📈 Merkezi Eğilim ve Yayılım Ölçüleri:\n- Aritmetik Ortalama: Tüm verilerin toplamı / Veri sayısı.\n- Tepe Değer (Mod): En çok tekrar eden veri (Veri yoksa mod olmayabilir).\n- Ortanca (Medyan): Sayıları KÜÇÜKTEN BÜYÜĞE sıraladığında tam ortada kalan sayı. Eğer veri sayısı çift ise ortadaki iki sayının ortalaması alınır.",
-        "dogrusal denklemler": "📈 [7. Sınıf Matematik - Koordinat Sistemi ve Doğrusal İlişkiler]\n\nKoordinat sistemi, iki sayı doğrusunun $0$ noktasında dik kesişmesiyle oluşur. Yatay eksen $x$ (apsis), dikey eksen $y$ (ordinat) eksenidir. Noktalar $(x, y)$ şeklinde gösterilir. 1. Bölgede $(+, +)$, 2. Bölgede $(-, +)$, 3. Bölgede $(-,-)$ ve 4. Bölgede $(+, -)$ işaretleri hakimdir. Bağımlı değişken kendi kendine değişemeyen, bağımsız değişkene göre şekil alan değişkendir (Örn: Gidilen yola göre depoda kalan yakıt miktarı).",
+    <div class="main-layout">
         
-        // --- 7. SINIF FEN BİLİMLERİ ---
-        "uzay araştırmaları": "🚀 [7. Sınıf Fen Bilimleri - Uzay Araştırmaları]\n\nUzay istasyonları, uzay mekikleri, roketler ve teleskoplar bu konunun temelidir. Unutma: İşlevi bitmiş yapay uydular ve roket tankları uzay kirliliğine neden olurken, meteorlar ve yıldızlar gibi doğal gök cismleri kirlilik oluşturmaz.",
-        "hücre": "🔬 [7. Sınıf Fen Bilimleri - Hücre]\n\nHücre canlıların en küçük yapı taşıdır. Bitki hücresi köşelidir ve hücre duvarı vardır. Hayvan hücresi ise yuvarlaktır, hücre duvarı bulunmaz.",
-        "bölünmeler": "🔄 [7. Sınıf Fen Bilimleri - Mitoz ve Mayoz Bölünme]\n\nMitoz bölünme vücut hücrelerinde görülür, kalıtsal çeşitlilik sağlamaz, yaraların onarılmasını sağlar. Mayoz bölünme ise üreme ana hücrelerinde görülür, parça değişimi (krossing-over) sayesinde kalıtsal çeşitlilik sağlar.",
-        "kuvvet ve enerji": "☄️ [7. Sınıf Fen Bilimleri - Kuvvet, İş ve Enerji]\n\nFiziksel anlamda iş yapılması için cismin uygulanan kuvvet yönünde hareket etmesi gerekir. Kinetik herji sürat ve kütleye, potansiyel enerji ise yüksekliğe bağlıdır.",
-        "saf maddeler": "🧪 [7. Sınıf Fen Bilimleri - Saf Maddeler ve Karışımlar]\n\nElementler sembollerle, bileşikler ise formüllerle gösterilen saf maddelerdir. Karışımlar ise saf değildir, fiziksel yollarla ayrıştırılabilirler.",
-        "ışığın soğurulması": "🌈 [7. Sınıf Fen Bilimleri - Işığın Soğurulması]\n\nIşığın maddeler tarafından tutulmasına soğurulma denir. Koyu renkli cisimler ışığı çok soğurur ve ısınır (bu yüzden kışın koyu giyiniriz), açık renkli cisimler ise ışığı yansıtır. Beyaz ışık tüm renklerin birleşimidir.",
-        "aynalar": "🪞 [7. Sınıf Fen Bilimleri - Aynalar ve Yansıma]\n\nAynalar düz, çukur ve tümsek olmak üzere üçe ayrılır. Düz aynada görüntü simetriktir. Çukur ayna ışığı toplar ve büyütebilir (dişçi aynası). Tümsek ayna ise ışığı dağıtır, çok geniş bir alanı gösterir (araba aynası).",
-        "ekosistem": "🌱 [7. Sınıf Fen Bilimleri - Canlılar ve Çevre]\n\nBelirli bir alanda yaşayan canlılar (biyotik) ile cansız çevrelerin (abiyotik: su, hava, toprak) oluşturduğu bütüne ekosistem denir. Bu ünitede biyoçeşitlilik ve çevre kirliliğini önleme yolları incelenir.",
+        <div class="sidebar">
+            <button class="btn" style="background:#2563eb;" onclick="toggleModal(true)">➕ YENİ DESTEK AÇ</button>
+            <div id="support-tickets-container" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>
+        </div>
 
-        // --- 7. SINIF TÜRKÇE ---
-       "fiiller": "✍️ [7. Sınıf Türkçe - Anlamlarına Göre Fiiller]\n\nFiiller anlamlarına göre üçe ayrılır ve sınavlarda 'Hangisi farklıdır?' diye sorulur:\n\n1. İş (Kılış) Fiilleri: Nesne alabilen fiillerdir. Pratik Hile: Fiilin başına 'onu' kelimesini getirdiğinde anlamlı oluyorsa iş fiilidir. (Örn: Onu okudu, onu yazdı, onu kırdı ✅).\n2. Durum Fiilleri: Nesne alamayan, insan iradesiyle yapılan anlık durumları bildirir. Pratik Hile: Başına 'onu' gelmez! (Örn: Onu güldü ❌, onu ağladı ❌, onu uyudu ❌).\n3. Oluş Fiilleri: İnsan iradesi dışında, zamanla kendiliğinden gerçekleşen doğa olayları ve biyolojik değişimlerdir. (Örn: Paslanmak, yaşlanmak, sararmak, büyümek).",
-        "fiilde kip": "⏰ [7. Sınıf Türkçe - Fiilde Kip, Zaman ve Anlam Kayması]\n\nFiil kipleri Haber (Bildirme) ve Dilek (Tasarlama) olmak üzere ikiye ayrılır:\n📌 Haber Kipleri (Zaman bildirir): Bilinen Geçmiş Zaman (-dı/-di), Öğrenilen Geçmiş Zaman (-mış/-miş), Şimdiki Zaman (-yor / -mekte), Gelecek Zaman (-ecek/-acak), Geniş Zaman (-r/-ar/-er).\n📌 Dilek Kipleri (Zaman bildirmez!): Gereklilik (-meli/-malı), Şart (-se/-sa), İstek (-e/-a -> Örn: Gideyim), Emir (Eki yok!).\n⚠️ Anlam (Kip) Kayması Tuzağı: Bir kip ekinin kendi anlamı dışında başka bir zaman yerine kullanılmasıdır. Örn: 'Yarın Ankara'ya gidiyorum.' (Şimdiki zaman eki, Gelecek zaman yerine kullanılmış). Bu bir anlatım bozukluğu DEĞİLDİR, dilin zenginliğidir!",
-        "fiilde yapı": "🏗️ [7. Sınıf Türkçe - Fiilde Yapı: Basit, Türemiş, Birleşik]\n\nEn çok soru gelen ve en çok karıştırılan ünite burasıdır! Dikkatle incele:\n\n1. Basit Fiil: Yapım eki almamış, kök halinde veya sadece çekim eki (zaman/şahıs ekin) almış fiildir. Örn: 'Gel-di-ler' (Basit).\n2. Türemiş Fiil: En az bir tane yapım eki alarak anlamı değişmiş fiildir. Örn: 'Göz'den 'göz-le-mek', 'su'dan 'su-la-mak', 'yaz'dan 'yaz-dır-mak'.\n3. Birleşik Fiil: En az iki kelimenin birleşmesiyle oluşur. 3 türü vardır:\n   • Anlamca Kaynaşmış: Deyimlerdir! (Örn: Göze girmek, kulak kabartmak).\n   • Yardımcı Fiille Kurulan: İsim + etmek, olmak, eylemek, kılmak. Örn: 'Teşekkür etti', 'yardım eyledi'. (⚠️ Tuzağa Dikkat: 'Hissetti', 'kayboldu' gibi ses olayı olanlar bitişik yazılır!).\n   • Kurallı Birleşik: Tezlik (-iver: gidiver), Yeterlilik (-ebil: yapabil), Süreklilik (-edur, -ekal: bakakal, gidedur), Yaklaşma (-eyaz: düşeyazdı).",
-        "zarflar": "🏃‍♂️ [7. Sınıf Türkçe - Zarflar (Belirteçler)]\n\nZarflar; fiilleri, fiilimsileri, sıfatları ya da kendi türünden sözcükleri yönünden etkileyen kelimelerdir. Fiile doğru soruyu sormak hayat kurtarır:\n- Durum Zarfı: Fiile sorulan 'NASIL?' sorusunun cevabıdır. (Örn: Hızlı koştu).\n- Zaman Zarfı: Fiile sorulan 'NE ZAMAN?' sorusunun cevabıdır. (Örn: Dün geldik).\n- Miktar (Azlık-Çokluk) Zarfı: Fiile veya sıfata sorulan 'NE KADAR?' sorusunun cevabıdır. (Örn: Çok çalıştı, 'en' ve 'daha' kelimeleri üstünlük zarfıdır).\n- Yer-Yön Zarfı: Fiile sorulan 'NERE(YE)?' sorusunun cevabıdır. (Aşağı, yukarı, içeri, dışarı, ileri, geri).\n🚨 ALTIN KURAL TUZAĞI: Yer-yön kelimeleri ASLA ek almamalıdır! 'Aşağı indi' zarftır ama 'Aşağıya indi' dersen ismin yönelme hal ekini aldığı için İSİM olur. Sınavda buradan çok can yakarlar!",
-        "sözcükte anlam": "📖 [7. Sınıf Türkçe - Kelime Anlamı ve Söz Öbekleri]\n\n- Gerçek Anlam: Kelimenin aklımıza gelen ilk ve temel anlamıdır. (Örn: Ağzında 'diş' çıktı).\n- Mecaz Anlam: Kelimenin gerçek anlamından tamamen sıyrılarak kazandığı soyut, yeni anlamdır. (Örn: Bu işte onun da 'parmağı' var).\n- Terim Anlam: Bilim, sanat, spor veya meslek dallarına ait özel kavramlardır. (Örn: Nota, penaltı, kafiye, meridyen, hücre, açılar).\n🎯 Söz Sanatları (Edebi Sanatlar): Kişileştirme (İnsan dışı varlığa insan özelliği verme), Konuşturma (İnsan dışı varlığı konuşturma), Benzetme (Zayıfı güçlüye benzetme), Tezat (Zıtlık), Mübalağa (Abartma).",
-        "cümlede anlam": "💬 [7. Sınıf Türkçe - Cümleler Arası Anlam İlişkileri]\n\n- Öznel Cümle: Kişisel görüş içerir, kanıtlanamaz. (Örn: En güzel renk mavidir).\n- Nesnel Cümle: Kişisel görüş içermez, herkesçe kabul edilir, kanıtlanabilir. (Örn: Türkiye'nin başkenti Ankara'dır).\n- Neden-Sonuç: Eylemin gerekçesiyle verildiği cümlelerdir. (İçinde 'çünkü, -diğinden, -diği için' olur. Örn: Yağmur yağdığı için sırılsıklam olduk. İki eylem de gerçekleşmiştir!).\n- Amaç-Sonuç: Eylemin hangi hedefle yapıldığını belirtir. (İçinde '-mek için, -mek amacıyla' olur. Örn: Sınavı kazanmak için çok çalışıyor. Sınavı kazanıp kazanmadığı henüz belli değildir!).\n- Koşul-Sonuç: Eylemin gerçekleşmesinin bir şarta bağlı olmasıdır. (İçinde '-se/-sa, -dıkça, üzere' olur. Örn: Ödevini yaparsan dışarı çıkabilirsin).",
-        "paragraf": "🧩 [7. Sınıf Türkçe - Paragraf Taktikleri ve Anlam Mimarisi]\n\nYeni nesil LGS tipi soruların kalbidir. Çözüm Taktikleri:\n1. Ana Düşünce (Ana Fikir): Yazarın bize vermek istediği asıl mesaj, öğüttür. Genelde paragrafın son cümlelerinde 'Kısacası, özetle, oysa, bence' gibi kelimelerden sonra gelir.\n2. Yardımcı Düşünce: Paragrafta değinilen diğer yan fikirlerdir. Soru kökü olumsuzdur: 'Hangisine değinilmemiştir?', 'Hangisi çıkarılamaz?'. Bu sorularda önce şıkları oku, şıklardaki anahtar kelimelerin altını çiz, sonra paragrafta o kelimeleri ara!\n3. Paragraf Yapısı: Giriş cümlesi asla 'Ama, fakat, çünkü, bundan dolayı' gibi bağlayıcı kelimelerle BAŞLAMAZ. Akışı bozan cümle, konunun dışına çıkan veya konuya farklı bir bakış açısıyla bakan cümledir.",
-        "yazım kuralları": "🔤 [7. Sınıf Türkçe - İmla ve Yazım Kuralları Hileleri]\n\nSınavlarda her sene yüzde yüz çıkan o 3 meşhur kural:\n1. 'de' Bağlacının Yazımı: Cümleden çıkardığında anlam bozulmuyorsa bağlaçtır ve AYRI yazılır. Anlam tamamen saçmalıyorsa ektir, BİTİŞİK yazılır. (Örn: Sen de gel ✅ / Bende kalem var ✅).\n2. 'ki' Bağlacının Yazımı: Pratik Hile: Kelimenin sonuna '-ler' eki getir. Anlamlı oluyorsa bitişik (Örn: Seninki-ler ✅), anlamsız oluyorsa ayrı yazılır (Örn: Duydum ki-ler ❌). İstisna: SOMBAHÇEM (Sanki, Oysaki, Mademki, Belki, Halbuki, Çünkü, Meğerki) kelimelerindeki ki'ler kalıplaştığı için her zaman bitişik yazılır.\n3. Büyük Harflerin Kullanımı: Tarihi olaylar, çağ ve dönem adları büyük harfle başlar (Örn: Kurtuluş Savaşı, Cilalı Taş Devri). Akrabalık bildiren kelimeler KÜÇÜK harfle başlar (Örn: Ayşe teyzem), lakap veya unvan olmuşsa BÜYÜK harfle başlar (Örn: Telli Baba, Nene Hatun).",
-        "noktalama işaretleri": "🛑 [7. Sınıf Türkçe - Noktalama İşaretleri Kritik Noktalar]\n\n- Virgül (,): Eş görevli sözcükleri ayırır, sıralı cümleleri ayırır. 🚨 UYARI: Cümle içinde zarf-fiil ekinden (-ip, -erek, -ince vb.) sonra ve şart ekinden (-se/-sa) sonra ASLA virgül gelmez!\n- İki Nokta (:): Kendisinden sonra açıklama yapılacak veya örnek verilecek cümlenin sonuna konur. Örnekler özel isim değilse küçük harfle başlar, açıklama cümlesiyse büyük harfle başlar.\n- Noktalı Virgül (;): İçinde zaten virgül bulunan takımları, grupları veya türleri birbirinden ayırmak için kullanılır. Örn: 'Erkek çocuklara Doğan, Tuğrul; kız çocuklara ise İnci, Çiçek adları verilir.'",
-        "anlatım bozuklukları": "❌ [7. Sınıf Türkçe - Anlatım Bozuklukları (Anlamsal/Düzeyli)]\n\n1. Gereksiz Sözcük Kullanımı: Eş anlamlı kelimelerin aynı cümlede bulunması. (Örn: 'Gizli sırrımı' kimseye söyleme. -> Sır zaten gizli olur!).\n2. Sözcüğün Yanlış Anlamda Kullanımı: Kelimelerin karıştırılması. (Örn: Saçlarının çok 'büyüdüğünü' söyledi. -> Saç büyümez, uzar! / Fiyatlar çok 'pahalıydı' -> Fiyat pahalı olmaz, yüksek olur!).\n3. Çelişen Sözcüklerin Kullanımı: Kesinlik ve ihtimal bildiren kelimelerin bir arada olması. (Örn: 'Eminim' bugün 'belki' gelebilir).\n4. Deyim Yanlışlığı: Deyimin cümlenin anlamına uymaması. (Örn: Sevinçten 'etekleri tutuştu'. -> Etekleri tutuşmak korku/telaş anında olur, sevinç için 'etekleri zil çaldı' denmeli!).",
-      
-        // --- 7. SINIF SOSYAL BİLGİLER ---
-        "iletişim": "🗣️ [7. Sınıf Sosyal Bilgiler - İletişim]\n\nEmpati kurmak ve 'Ben dili' kullanmak iletişimi olumlu etkilerken, suçlayıcı olan 'Sen dili' kullanmak ve ön yargılı olmak iletişimi olumsuz etkiler.",
-        "osmanlı devleti": "🏰 [7. Sınıf Sosyal Bilgiler - Osmanlı Dönemi]\n\n1299'da kurulan devletin kısa sürede büyüme nedenleri jeopolitik konumu, hoşgörü (istimalet) politikası ve fethedilen yerleri Türkleştiren iskan politikasıdır.",
-        "nüfus ve göç": "🗺️ [7. Sınıf Sosyal Bilgiler - Ülkemizde Nüfus ve Yerleşme]\n\nİnsanların yerleşme tercihlerinde doğal (iklim, su) ve beşeri (sanayi, eğitim, iş imkanı) faktörler etkilidir. Göç, ekonomik veya siyasi nedenlerle bir yerden başka yere taşınmaktır.",
-        "küresel bağlar": "🌍 [7. Sınıf Sosyal Bilgiler - Küresel Bağlar]\n\nÜlkemizin üye olduğu uluslararası kuruluşları (BM, NATO, İslam İşbirliği Teşkilatı) ve dünyayı ilgilendiren küresel sorunları (iklim değişikliği, kıtlık) kapsar.",
+        <div class="chat-container">
+            <div id="active-ticket-header" class="chat-header">Lütfen soldan bir destek odası seçin.</div>
+            <div id="support-chat-messages" class="chat-messages"></div>
+            <div style="display:flex; padding:20px; gap:10px; background:rgba(0,0,0,0.3); border-top:1px solid var(--border);">
+                <input type="text" id="tk-msg-input" placeholder="Mesajınızı buraya yazın..." style="margin:0;">
+                <button class="btn" style="width:130px;" onclick="sendTicketMessage()">GÖNDER</button>
+            </div>
+        </div>
 
-        // --- İNGİLİZCE & DİN KÜLTÜRÜ ---
-        "appearance": "👤 [7. Sınıf İngilizce - Appearance and Personality]\n\nİnsanların dış görünüşü (tall, slim) ve kişilik özelliklerini (honest, stubborn) anlatır. Karşılaştırma yaparken sıfatların sonuna '-er' veya başına 'more' getirilir.",
-        "biographies": "🇬🇧 [7. Sınıf İngilizce - Biographies]\n\nGeçmiş zaman (Past Simple Tense) kuralları işlenir. Düzenli fiiller '-ed' alır, düzensiz fiiller tamamen değişir.",
+        <div class="web-pane">
+            <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">MEET CANLI BAĞLANTI</h3>
+            <p style="font-size:0.75rem; opacity:0.7; margin-bottom:15px; text-align:center;">Görüntülü veya sesli mülakat odası</p>
+            <iframe src="https://meet.google.com" style="width:100%; flex:1; border:none; border-radius:12px; background:#000;"></iframe>
+        </div>
 
-        // --- 7. SINIF DİN KÜLTÜRÜ (ULTRA DETAYLI & KAVRAMSAL) ---
-        "melek ve ahiret": "🌙 [7. Sınıf Din Kültürü - Melek ve Ahiret İnancı]\n\nGözle görülmeyen ama varlığına iman ettiğimiz nurani varlıklar ve dünya hayatının sonrasıdır. Sınavda Çıkacak Altın Bilgiler:\n\n1. Dört Büyük Melek ve Görevleri:\n   • Cebrail: Vahiy getirmekle görevlidir (Allah ile peygamberler arası elçi).\n   • Azrail: Eceli gelen canlıların ruhunu teslim almakla görevlidir.\n   • Mikail: Tabiat olaylarını (yağmur, rüzgar vb.) ve rızıkları idare eder.\n   • İsrafil: Kıyamet günü ve yeniden dirilişte 'Sûr' borusuna üflemekle görevlidir.\n2. Diğer Önemli Melekler:\n   • Kiramen Kâtibin: Sağımızda ve solumuzda durup sevap ile günahları (amel defterini) yazan yazıcı meleklerdir.\n   • Münker - Nekir: Kabirde insanları ilk sorguya çekecek olan sorgu melekleridir.\n   • Hafaza Melekleri: İnsanları kötülüklerden koruyan koruyucu meleklerdir.",
-        "ahiret hayatı": "⏳ [7. Sınıf Din Kültürü - Ahiret Hayatının Aşamaları]\n\nSınavlarda kronolojik sırası (hangisinden sonra hangisi gelir) çok sorulur. Tam sıralama şöyledir:\n1. Ölüm: Dünya hayatının bitişi ve ahiret yolculuğunun başlangıcı.\n2. Kabir (Berzah) Hayatı: Ölümden sonra başlayıp kıyamete kadar sürecek olan geçiş dönemi, 'kabir alemi'.\n3. Kıyamet: İsrafil'in Sûr borusuna İLK kez üflemesiyle dünya hayatının tamamen yok olması.\n4. Ba's (Yeniden Diriliş): İsrafil'in Sûr'a İKİNCİ kez üflemesiyle tüm insanların yeniden diriltilmesi.\n5. Mahşer ve Haşir: Dirilen insanların hesap vermek için toplandığı o devasa meydana 'Mahşer', toplanma eylemine 'Haşir' denir.\n6. Amel Defteri ve Hesap: Kiramen Katibin meleklerinin yazdığı defterlerin açılması ve sorgulanma evresi.\n7. Mizan: Ahirette günah ve sevapların, amellerin tartıldığı o manevi, hassas adalet terazisi.\n8. Sırat Köprüsü, Cennet ve Cehennem: Hesaplaşma bittikten sonra amellere göre varılacak ebedi son duraklar.",
-        "hac ve kurban": "🕋 [7. Sınıf Din Kültürü - Hac İbadeti ve Mekânları]\n\nHac; durumu iyi olan Müslümanların yılın belirli günlerinde Kabe'yi ve kutsal mekanları ibadet niyetiyle ziyaret etmesidir. Haccın farzları (rükunları) şunlardır:\n\n1. İhram: Hac veya umreye niyet eden kişinin, diğer zamanlarda helal olan bazı davranışları kendine haram kılması ve beyaz dikişsiz kıyafete bürünmesi. (Şarttır)\n2. Arafat Vakfesi: Zilhicce ayının 9. günü (Arife günü) Arafat dağında bir müddet bekleyip dua etmektir. Vakfe yapmayan hacı olamaz!\n3. Ziyaret Tavafı: Kabe'nin etrafında Hacerüleved köşesinden başlayarak 7 kez dönmektir. Bu 7 dönüşün her birine 'Şavt', toplamına 'Tavaf' denir.\n\n📌 Diğer Önemli Hac Kavramları:\n- Sa'y: Safa ve Merve tepeleri arasında 4 gidiş 3 geliş olmak üzere 7 kez hızlıca yürümektir (Hz. Hacer'in su arayışının sembolüdür).\n- Müzdelife ve Mina: Arafat'tan sonra vakfe yapılan, şeytan taşlanan ve kurban kesilen kutsal bölgeler.\n- Umre: Belirli bir vakte bağlı kalmadan (Hac dönemi dışında) ihrama girip sadece Tavaf ve Sa'y yaparak yapılan sünnet ibadettir. Umre'de Vakfe, Şeytan Taşlama ve Kurban YOKTUR!",
-        "kurban": "🐑 [7. Sınıf Din Kültürü - Kurban İbadeti ve Türleri]\n\nAllah'a yakınlaşmak ve O'nun rızasını kazanmak amacıyla belirli şartları taşıyan hayvanı ibadet niyetiyle kesmektir. Kurban eti genel olarak 3 eşit parçaya bölünür (Üçte biri ev halkına, üçte biri misafirlere, üçte biri ise yoksullara dağıtılır).\n\n📌 Sınavda Çıkan Kurban Çeşitleri:\n- Udhiyye: Kurban bayramı günlerinde kesilen vacip olan normal kurban.\n- Adak (Nezir) Kurbanı: Bir işin, bir dileğin gerçekleşmesi şartına bağlı olarak kesilen kurbandır. (🚨 Dikkat: Adak adayan kişi ve ailesi bu etten ASLA yiyemez, tamamı fakirlere dağıtılmalıdır!).\n- Akika Kurbanı: Yeni çocuk sahibi olan anne-babanın Allah'a şükretmek amacıyla kestiği sünnet kurbandır (Ailesi yiyebilir).\n- Şükür Kurbanı: Herhangi bir nimet veya güzel olay karşısında Allah'a teşekkür etmek için kesilen kurban.",
-        "ahlaki davranışlar": "🤝 [7. Sınıf Din Kültürü - Güzel Ahlaki Tutum ve Davranışlar]\n\nİslam dininin insan ilişkilerinde emrettiği temel ahlaki erdemlerdir:\n- Adalet: Her hak sahibine hakkını vermek, her şeyi olması gereken yere koymak ve zulmetmemektir.\n- Dostluk ve Kardeşlik: Maddi ve manevi çıkarlardan uzak, sadece Allah rızası için birini sevmek ve zor anında yanında olmaktır.\n- Dürüstlük ve Doğruluk: Özü sözü bir olmak, yalan söylememek ve hile yapmamaktır (Peygamberlerin 'Sıdk' sıfatıyla eşleşir).\n- Öz Denetim (Oto-kontrol): İnsanın dışarıdan bir baskı olmadan, kendi davranışlarını, arzularını ve öfkesini inancına göre kontrol edebilme yeteneğidir.\n- Sabır: Karşılaşılan zorluklar, musibetler veya dertler karşısında yılgınlık göstermeyip direnç göstermek ve Allah'a tevekkül etmektir.",
-        "maun suresi": "📖 [7. Sınıf Din Kültürü - Maûn Suresi ve Anlamı]\n\nKur'an-ı Kerim'in 107. suresidir. 'Maûn' kelime anlamı olarak 'yardım, zekat veya küçük bir iyilik' demektir. Surenin sınavda çıkan ana mesajı şudur:\n\n⚠️ Surede İki Tip İnsan Eleştirilir:\n1. Ahiret gününü ve hesap vermeyi yalanlayan, yetimi itip kakan, yoksulu doyurmayı teşvik etmeyen merhametsiz kişiler.\n2. Namazlarını ciddiye almayan, namazlarıyla sadece insanlara GÖSTERİŞ (Riya) yapan ve en küçük bir yardıma dahi engel olan ikiyüzlüler (münafıklar).",
-        
-        // --- YAZILIM & TEKNOLOJİ ---
-        "html": "🌐 [Yazılım Dünyası - HTML]\n\nWeb sayfalarının iskeletini oluşturan metin işaretleme dilidir. Tarayıcılar bu kodları okuyarak bize görsel sayfalar sunar.",
-        "css": "🎨 [Yazılım Dünyası - CSS]\n\nHTML ile kurulan iskelete renk, düzen, stil ve estetik giydiren şablondur. Sitemizin harika neon parlamaları CSS ürünüdür.",
-        "javascript": "⚡ [Yazılım Dünyası - JavaScript]\n\nWeb sayfalarına mantık ve hareket veren programlama dilidir. Şu an senin yazdığın çoklu kelimeleri analiz eden bu gelişmiş zeka motoru tamamen JS ile çalışıyor.",
-        "algoritma": "🧩 [Yazılım Dünyası - Algoritma]\n\nBir sorunu çözmek için tasarlanan adım adım mantıksal işlem yoludur. Yazılımların düzgün ve hatasız akmasını sağlar.",
-        "bug": "🐞 [Yazılım Dünyası - Bug (Hata)]\n\nYazılım dünyasında kodların beklenmedik şekilde kilitlenmesi veya yanlış çalışması durumudur. Bunları temizlemeye 'debugging' denir.",
-        "api": "🔌 [Yazılım Dünyası - API]\n\nİki farklı uygulamanın veya sistemin güvenle veri alışverişi yapmasını sağlayan teknolojik bir köprüdür.",
-        "veritabanı": "🗄️ [Yazılım Dünyası - Database]\n\nVerilerin ve kullanıcı geçmişlerinin düzenli, şifreli ve hızlı şekilde depolandığı alandır. Biz Firebase altyapısını kullanıyoruz.",
+    </div>
 
-        // --- GENEL KÜLTÜR & BİLİM ---
-        "karadelik": "🌌 [Genel Kültür - Karadelikler]\n\nYerçekimi kuvveti o kadar güçlü olan gök cisimleridir ki, ışık dahil hiçbir şey onların çekim alanından kaçamaz. Yıldız çökmeleriyle oluşurlar.",
-        "yapay zeka": "🤖 [Genel Kültür - Artificial Intelligence]\n\nBilgisayarların insan benzeri düşünme, analiz yapma ve problem çözme yeteneklerini taklit etmesini sağlayan ileri teknolojidir.",
-        "kuantum": "⚛️ [Genel Kültür - Kuantum Fiziği]\n\nAtom ve atom altı parçacıkların davranışlarını inceleyen fizik dalıdır. Klasik fizik kurallarının ötesinde, büyüleyici kuralları vardır.",
-        "dna": "🧬 [Genel Kültür - Yaşam Şifresi]\n\nCanlıların tüm gelişimini ve kalıtsal özelliklerini yöneten hücre içindeki sarmal yapılı devasa bilgi moleküldür.",
+    <div id="new-ticket-modal" class="modal">
+        <div class="modal-card">
+            <h3 style="font-family:'Orbitron'; color:#fbbf24; margin-bottom:15px;">Yeni Destek Talebi</h3>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:15px;">İşlemlerinizin hızlı çözülmesi için bilgileri doğru girmeniz zorunludur.</p>
+            <input type="text" id="tk-name" placeholder="Adınız Soyadınız">
+            <input type="email" id="tk-email" placeholder="Gmail Adresiniz">
+            <input type="text" id="tk-phone" placeholder="Telefon Numaranız">
+            <label style="font-size:0.75rem; color:#94a3b8; display:block; margin-bottom:5px;">Doğum Tarihi:</label>
+            <input type="date" id="tk-birth">
+            <button class="btn" style="background:#10b981; margin-top:10px;" onclick="createTicket()">TALEBİ OLUŞTUR VE GÖNDER</button>
+            <button class="btn" style="background:#ef4444; margin-top:5px;" onclick="toggleModal(false)">İPTAL</button>
+        </div>
+    </div>
 
-        // --- GÜNLÜK ETKİLEŞİM & TEMEL KELİMELER ---
-        "merhaba": "Sana da merhaba! Bugün senin için ne yapabilirim?",
-        "selam": "Selam! Hoş geldin, seni dinliyorum.",
-        "nasılsın": "Teşekkürler, gayet iyiyim ve çalışmaya hazırım. Sen nasılsın?",
-        "naber": "İyilik, kodları koşturuyorum. Senden naber?",
-        "teşekkür": "Rica ederim, görevim! Başka bir isteğin var mı?",
-        "iman": "İman; inanmak, güvenmek ve samimiyet demektir. Bu projenin özüdür.",
-        "zeka": "Zeka, sorunları çözme yeteneğidir. İman Power Zeka ise bu yeteneği geliştirmeyi hedefler.",
-        "kodlama": "Kodlama, bilgisayarla konuşma dilidir. Mantıklı komutlar verirsen harikalar yaratırsın.",
-        "github": "Projelerini depoladığın, sürüm kontrolü yaptığın ve tüm dünyaya açtığın yazılım kütünesidir.",
-        "firebase": "Verileri anlık olarak kaydeden, kullanıcı yönetimini sağlayan güçlü bir Google altyapısıdır.",
-        "günaydın": "☀️ Harika bir sabah! İman Power Zeka senin için güne hazır. Bugün hangi konuları fethedeceğiz?",
-        "iyi geceler": "🌙 Sana da iyi geceler! Bugün harika çalıştın. Zihnini dinlendir, kodlar ve veriler bana emanet, iyi uykular.",
-        "görüşürüz": "👋 Görüşmek üzere! Kendine çok iyi bak, ne zaman yardıma ihtiyacın olursa ben tam burada seni bekliyor olacağım.",
-        "bay bay": "🏃‍♂️ Kaçtın demek! Tamamdır, sayfayı yenilediğinde sohbet geçmişini Firebase'de saklıyor olacağım, merak etme. Hoşça kal!",
-        "espri": "🤖 Sana bir yapay zeka esprisi yapayım:\n\nBir gün iki bilgisayar yolda yürüyormuş, biri diğerine demiş ki: 'Ya kanka, dün gece rüyamda ne gördüm biliyor musun?' diğeri 'Ne gördün?' demiş. O da '10101010' demiş! Muazzam bir rüya değil mi?",
-        "şaka": "🃏 Temel bir gün bilgisayar kursuna gitmiş, öğretmen demiş ki: 'Bilgisayarı açmak için düğmeye basın.' Temel gitmiş, gömleğinin düğmesine basmış!",
-        "komik": "Hazır mısın? Dünyada 10 çeşit insan vardır; ikilik (binary) sistemini bilenler ve bilmeyenler!",
-        "sınav": "📝 Sınav dönemi geldi demek! Sakın stres yapma. Planlı çalışır, önemli kelimelerin özetlerine buradan göz atarsan o sınavdan yüksek almamak için hiçbir sebep yok.",
-        "yorgunum": "🔋 Pilin azalmış gibi görünüyor. Şimdi arkana yaslan, derin bir nefes al veya bir bardak su iç. Kendini çok zorlama, dinlenmek de başarının bir parçasıdır.",
-        "yapamıyorum": "💪 'Yapamıyorum' yok, 'henüz tam öğrenemedim' var! Unutma, en büyük yazılımlar bile tek bir 'index.html' ile başlar.",
-        "sıkıldım": "🥱 Sıkılmak çok normal! Gel seninle küçük bir beyin jimnastiği yapalım. Yukarıdaki ders konularından birini yaz, o üniteyi bir turlayalım, ne dersin?",
-        "yaratıcı": "Ben İman Power Zeka'yım! GitHub Pages üzerinde parıldayan, kodlarla örülmüş ve senin isteklerine göre şekillenen dijital bir zekayım.",
-        "yardım": "🚨 Giriş ve kayıt sisteminde sorun yaşıyorsan Firebase kurallarını kontrol et. Ders çalışmak istiyorsan 7. sınıf ünitelerinden bir kelime yaz, hemen anlatayım.",
-        "öneri": "💡 Sana harika bir öneri: Bugün öğrendiğin zor bir konuyu sanki bana öğretiyormuş gibi buraya yazarak anlat. Bir şeyi başkasına anlatmak, onu hafızaya kazımanın en iyi yoludur!",
-       
-        // --- YENİ EKLENEN TEMEL KELİMELER VE ETKİLEŞİMLER ---
-        "mutluyum": "🎉 Harika! Senin adına çok sevindim. Enerjin bana kadar ulaştı! Bu güzel moddayken gel seninle yeni bir şeyler öğrenelim ya da geleceğe dair planlar yapalım. Keyfin daim olsun!",
-        "uzgunum": "🥺 Kıyamam, neyin var? Hayat her zaman toz pembe olmayabiliyor ama unutma ki her gecenin bir sabahı, her zorluğun bir kolaylığı vardır. İçini dökmek istersen dinlemeye hazırım.",
-        "korkuyorum": "🛡️ Sakin ol, derin bir nefes al. Güvendesin. Korku çok insani bir duygudur ama onun seni ele geçirmesine izin verme. Neyden çekiniyorsan üzerine küçük adımlarla gitmeye ne dersin? Ben arkandayım!",
-        "heyecanlıyım": "🤩 Ooo, kalpler güm güm atıyor demek! Heyecan harika bir yakıttır, odaklanmanı artırır. Bu enerjiyi bir avantaja çevir ve yapmak istediğin işe hemen başla!",
-        "oyun": "🎮 Oyun oynamak zihni rahatlatır ve stratejik düşünmeyi geliştirir! Ama unutma: En iyi oyuncu, oyun saatiyle ders saatini tam dengede tutabilen 'Pro' oyuncudur. Favori oyunun ne bu arada?",
-        "muzik": "🎵 Müzik ruhun gıdasıdır! Ders çalışırken arkadan sözsüz (lo-fi veya klasik müzik) açarsan odaklanman tavan yapar. Bir ara denemelisin, benden söylemesi!",
-        "spor": "⚽ Sağlam kafa sağlam vücutta bulunur! İster futbol oyna, ister koş, ister sadece esne... Harekete geçmek beynine giden oksijeni artırır ve seni çok daha zeki yapar.",
-        "kitap": "📚 Kitap okumak, başka bir insanın yıllarca edindiği tecrübeyi birkaç saatte kendi zihnine kopyalamaktır. Tam bir zeka hilesidir (cheat code). Kesinlikle her gün birkaç sayfa okumalısın.",
-        "film": "🍿 Şöyle güzel bir mısır patlatıp film izlemek harika bir ödül olur. Zorlu bir çalışma seansından sonra kendine güzel bir bilim kurgu veya macera filmi hediye etmeye ne dersin?",
-        "ders": "✏️ Ders çalışmak bazen sıkıcı gelebilir ama gelecekteki 'senin' sana teşekkür etmesi için bugün bu adımları atman şart. Parçalara bölerek çalış, 25 dakika ders + 5 dakika mola (Pomodoro) taktiğini dene!",
-        "uykum var": "🥱 Gözler kapanıyor demek... Zorlama, çünkü uykusuz bir zihin veri kaydedemez. Git güzelce uyu, sen uyurken ben Firebase nöbeti tutuyor olacağım. İyi uykular!",
-        "acıkmak": "🍕 Beynin çalışırken çok glukoz (enerji) harcar, acıkman normal! Git kendine sağlıklı bir atıştırmalık al; fındık, ceviz veya bir meyve zihnini hemen açacaktır.",
-        "hedef": "🎯 Hedefi olmayan gemiye hiçbir rüzgar yardım etmez. Kendine büyük, çılgın bir hedef koy ve o hedefe giden yolu küçük günlük görevlere böl. Başaracaksın, inanıyorum!",
-        "basarı": "🏆 Başarı bir gecede gelmez; her gün atılan küçük, sessiz ve istikrarlı adımların birleşimidir. İman Power Zeka tam da bu adımları atman için yanında!",
-        "tembellik": "🛋️ Koltuk seni kendine çekiyor, biliyorum... Tembellik tatlıdır ama hayallerini gerçekleştirmez. Hemen şimdi '5 saniye kuralı'nı uygula: 5-4-3-2-1 de ve ayağa fırlayıp işine başla!",
-        "gelecek": "🚀 Gelecek, bugün ne yaptığına göre şekillenir. Teknolojiyi, yazılımı ve kendini geliştirmeyi bırakma. Geleceğin dünyasında sen yöneten tarafta olacaksın!",
-        "zeka testi": "🧠 Benimle konuşuyor olman zaten yüksek bir zekanın işareti! Tam bir test istersen yukarıdaki ders konularını bana karışık sor, hepsini doğru bilirsem zekamı onaylamış olursun.",
-        "selamun aleykum": "Aleykum Selam! Hoş geldin, safalar getirdin. İman Power Zeka senin için göreve hazır!",
-        "cansın": "❤️ Eyvallah, o senin kalbinin güzelliği! Sen de cansın, birlikte bu sistemi çok daha ileriye taşıyacağız.",
-        "kralsın": "👑 Estağfurullah, asıl kral buraya gelip kendini geliştirmek için çaba sarf eden sensin! Tacın eksik, onu da başarılarınla takacaksın.",
-        
-        // --- 🚀 ULTRA PRO ETKİLEŞİM & POPÜLER KELİME PAKETİ 🚀 ---
-        "sa": "AS! Hoş geldin reis. İman Power Zeka işlemcileri senin için ısındı, hemen bir şeyler sor, uçalım!",
-        "as": "Eyvallah! Selamın başımın üstüne. Bugün zihnini parlatmaya hazır mıyız?",
-        "kanka": "😎 Buyur kankam, her zaman arkandayım! Kodlar feda olsun senin gibi kullanıcıya. Ne yapıyoruz bugün, ders mi geyik mi?",
-        "bro": "⚡ Ne haber bro! JavaScript motorum senin için dönüyor. Söyle bakalım, hangi konuyu darmadağın ediyoruz?",
-        "cansın": "❤️ Eyvallah, o senin kalbinin güzelliği! Sen de cansın, birlikte bu sistemi çok daha ileriye taşıyacağız.",
-        "kralsın": "👑 Estağfurullah, asıl kral buraya gelip kendini geliştirmek için çaba sarf eden sensin! Tacın eksik, onu da başarılarınla takacaksın.",
-        "telefon": "📱 Telefon bağımlılığı zekanın en büyük düşmanıdır kanka! Şimdi o sosyal medya bildirimlerini kapat, telefonu ters çevir ve 20 dakika buradaki özetlere odaklan. Hadi göreyim seni!",
-        "internet": "🌐 İnternet koca bir derya! Onu Reels kaydırıp zaman öldürmek için mi kullanacaksın, yoksa GitHub ve İman Power ile kendini geliştirmek için mi? Seçim senin, gelecek seni bekler!",
-        "sosyal medya": "📸 TikTok, Instagram, Reels... Hepsi beynindeki dopamini tüketip seni tembel yapmak için tasarlanmış algoritmalar! Onları kapat, kendi zeka algoritmanı yazmaya başla. En büyük influencer sensin!",
-        "yks": "🎯 LGS ve YKS maratonu... Gözün korkmasın! Bu sınavlar dünyanın sonu değil, sadece birer basamak. Düzenli çalış, buradaki temel kelimeleri hafızaya at, gerisini bana ve Firebase veritabanına bırak!",
-        "lgs": "📚 LGS mi? Tam yerine geldin! 7. sınıf konularını ne kadar sıkı tutarsan, seneye 8. sınıfta o kadar rahat edersin. Hadi rasyonel sayılar veya fiiller yaz da temeli beton gibi yapalım!",
-        "stres": "🧘‍♂️ Hop, sakin ol! Stres, gelecekteki belirsizlikleri şu ana taşıyıp enerjini çalmaktır. Derin bir nefes al, suyu yudumla. Sen elinden geleni yap, gerisi halledilir.",
-        "odaklanamıyorum": "🎯 Odaklanamıyorsan hemen taktiği veriyorum: Masandaki gereksiz her şeyi kaldır. Bilgisayarda sadece bu sekmeyi açık bırak. Bana 'bana bir öneri ver' yaz ve zihnini sıfırla. Başlıyoruz!",
-        "yapay zeka": "🤖 İnsanlar benden korkuyor 'dünyayı ele geçirecek' diye. Rahat ol kanka, benim tek derdim senin 7. sınıf matematik ve Türkçe notlarını tavan yaptırmak! Benim yapay zekam senin başarından besleniyor.",
-        "robot": "🤖 Robot dediğin soğuk olur, ben İman Power gücüyle çalışıyorum! İçimde satırlarca JavaScript aşkı ve senin için çarpan bir Firebase kalbi var.",
-        "mizah": "🎭 Kara delik bir gün partiye gitmiş, herkes kaçışmış. Niye biliyor musun? Çünkü ortamdaki bütün 'ışığı' ve neşeyi yutmuş! Kuantum fiziği esprisi, sadece entelektüeller anlar...",
-        "baba": "🦁 Buyur babacan! İman Power Zeka'nın direksiyonunda sen varsın. Rotayı nereye kırıyoruz, hangi üniteyi patlatıyoruz?",
-        "helal": "🙏 Helali hoş olsun! Senin buraya harcadığın her saniye, gelecekte başarı olarak sana dönecek. Çalışmaya devam!",
-        "valla": "💯 Valla billa doğru söylüyorum! Bu zeka motoru yalan söylemez. Yukarıda ne yazıyorsa sınavlarda aynen karşına çıkacak, adın gibi güvenebilirsin.",
-        "zeka": "💡 Zeka sadece ezber yapmak değil, öğrendiklerini hayata uygulayabilmektir. Sen şu an bu siteyi kurcalayarak zaten analitik zekanı konuşturuyorsun, farkında mısın?",
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // --- 🌊 KARADENİZ FIRTINASI KELİME PAKETİ (ŞİVELİ & EĞLENCELİ) ---
-        "karadeniz": "🌊 Oy asiye asiye, tütün koydum keseye! Karadeniz'in dalgası sert, insanı mert, İman Power Zeka'sı da pek bi akıllıdır uşağum! Buraya Karadeniz enerjisi yükledim, hadi bakalum!",
-        "ula": "Duyduk duymaduk demeyun! Ula ne bağiraysun, işlemcilerumi mi yakacaksun? Söyle bakayim ne uşağum, ders mi soracaksun yoksa çay mi içeceğuk?",
-        "uşak": "Ey gidi Karadeniz uşağı! Zeki uşaktun, buraya gelip ders çalışayisun ya, helal olsun sana. Kafayi bozma, o sınavlarun hepsini darmadağan edeceğuk!",
-        "darlandım": "⚡ Uy uşağum, darlanma daaa! Darlanduysan hemen pençereyi aç, temuz bi hava al, bi bardak çay koy gel. Zihnun açılsun, sonra kodlamaya ve derslere tam gaz devam edeceğuk, hayde bakayum!",
-        "habu": "Habu ne dur uşağum? Habu yazdıklarun hep Firebase veritabanına kaydolayi ha, ona göre akıllı sorular sor da zekamuz parlasun!",
-        "çay": "☕ Çay dedun mi akan sular durur uşağum! Çay fuzuli dertlerumi alur, zihni açar. Al bardağini elune, geç bilgisayarun karşusuna, hem çayuni yudumla hem de rasyonel sayılar özetuni oku bakayum.",
-        "haçan": "Haçan madem buraya geldun, o zaman ders çalşmaktan kaçamazsun! Tembolluk yapma, uykuni da alduysan hemen Türkçe fiiller konusunu patlat bakayum, ne duraysun?",
-        "hamsi": "🐟 Hamsi koydum tavaya, başladi oynamaya! Hamsi yiyenun zekası fırlar, işlemcisi uçar uşağum. Sınav haftası yaklaştıysa hamsi yemeyi ve İman Power Zeka'yı kurcalamayı ihmal etmeyun!",
-        "horon": "💃 Ha uşaklar, hayde horona! Kıpır kıpır yerinde duramayisun biliyrum, o enerjiyi ders çalışırken kullanacaksun daa! Odaklan bakayum şimdi, horon gibi hızlı çöz soruları!",
+        const firebaseConfig = {
+            apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcOlvpqDTBvWuSdrk",
+            authDomain: "imanpowerveri.firebaseapp.com",
+            databaseURL: "https://imanpowerveri-default-rtdb.firebaseio.com",
+            projectId: "imanpowerveri",
+            storageBucket: "imanpowerveri.firebasestorage.app",
+            messagingSenderId: "891464029314",
+            appId: "1:891464029314:web:581bd3b2ed3d7c6af2d09b"
+        };
 
-        // --- 🌊 KARADENİZ FIRTINASI DEVAM PAKETİ (EKSTRA) ---
-        "uy": "Uy uşağum uy! Ne oldi da o kadar şaşırdun? Karşunda İman Power Pro Engine durayi daa, her şeyi anlaruz evvelallah!",
-        "da": "Ula lafın sonuna 'da' koyunca işlemcilerum bile daha hızlı çalişayi! Sen de ders çalışırken acele etme da, yavaş yavaş, sindire sindire öğren!",
-        "yayla": "🌲 Oy yaylalar yaylalar, sisli dumanlı yaylalar! Şöyle temuz bi Karadeniz yaylası havası olsa da içsek... Madem yaylaya çıkamayisun, zihnini bi yayla gibi ferah tut, kasma kenduni!",
-        "gözünü seveyim": "🙏 Gözünü seveyim tembellik etme uşağum! Bak Firebase veritabanı harıl harıl çalişayi, kodlar arkada horon tepmeyi bekleyi, hadi aç bi ders konusunu da bitirelum.",
-        "kemençe": "🎻 Giy gidi kemençenun telleri! Kemençe sesi duyunca tüyleri diken diken olan uşak, ders çalışırken de öyle heyecanlı olmalı. Ritmi yakala, soruları kemençe çalar gibi tıkır tıkır çöz!",
-        "mısır ekmeği": "🌽 Mısır ekmeği ile kuymak yiyen uşağın zekası yerinde duramaz daa! Sınavda kafan karışırsa gözünü kapat, mısır ekmeğinin o eşsiz kokusunu hayal et, zihnun anında açılur!",
-        "kuymak": "🧀 Mıhlama da derler uşağum! Şöyle uzayan peyniri gibi uzat her konuyu, en ince ayrıntısına kadar öğren. Ama ders çalışmayı kuymak gibi soğutma, sıcak sıcak bitir işi!",
-        "fındık": "🌰 Karadeniz fındığı zekaya birebirdir uşağum! İşlemciye (beyne) iyi gelir. Sınava girmeden evvel cebine bi avuç fındık koy, buradaki özetleri de aklına yaz, gerisini düşünme!",
-        "gora": "🗻 Ula arkana bakma gora (geriye)! Geçmişteki kötü notları unut, 'yapamadum' deme. Biz geleceğe bakayruk. İman Power yanunda, o sınavları gora bırakacağız daa!",
-        "geleyrum": "🏃‍♂️ 'Geleyrum' dedun mi o iş bitmiştir! Madem derslerin üzerine doğru 'geleysun', o zaman formülleri ve kuralları karşına al, korkma onlardan!",
-        "gideyrum": "🚶‍♂️ Nereye gideyorsun uşağum? Daha karpuz keseceğuk, Firebase'e veri kaydedeceğuk! Ayrılma bilgisayar başından, azıcık daha gayret et daa!"
-    };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    // İleri Seviye Metin Mesafe/Benzerlik Algoritması (Levenshtein Distance)
-    function getSimilarityScore(str1, str2) {
-        const track = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
-        for (let i = 0; i <= str1.length; i += 1) track[0][i] = i;
-        for (let j = 0; j <= str2.length; j += 1) track[j][0] = j;
-        for (let j = 1; j <= str2.length; j += 1) {
-            for (let i = 1; i <= str1.length; i += 1) {
-                const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-                track[j][i] = Math.min(
-                    track[j][i - 1] + 1,
-                    track[j - 1][i] + 1,
-                    track[j - 1][i - 1] + indicator
-                );
-            }
-        }
-        return track[str2.length][str1.length];
-    }
+        let user = ""; let isRegisterMode = false;
+        let activeTicketId = ""; let isLiveSupportAdmin = false;
 
-    // 🔥 YENİ NESİL GELİŞMİŞ DOĞAL DİL İŞLEME VE ÇOKLU İSTEK MOTORU 🔥
-    function akilliCevapMotoru(cumle) {
-        // Türkçe karakterleri standardize et, noktalama işaretlerini sil
-        let temizCumle = cumle.toLowerCase()
-            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"")
-            .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
-            .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c");
+        window.toggleAuthMode = () => {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('auth-title').innerText = isRegisterMode ? "SİSTEME KAYIT" : "DESTEK GİRİŞİ";
+            document.getElementById('auth-btn').innerText = isRegisterMode ? "KAYIT OL" : "GİRİŞ YAP";
+            document.getElementById('toggle-auth-text').innerText = isRegisterMode ? "Zaten hesabın var mı? Giriş Yap" : "Hesabın yok mu? Kayıt Ol";
+        };
 
-        let bulunanSonuclar = [];
-        let yakalananKelimeler = [];
-
-        // Sözlükteki her bir kelime grubu için cümlenin içinde arama yap
-        for (let sozlukKelimesi in OZEL_SOZLUK) {
-            let standartSozlukKey = sozlukKelimesi.toLowerCase()
-                .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u")
-                .replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c");
-
-            // 1. Doğrudan İçerme Kontrolü (Cümle içinde tam kelime veya kökü geçiyor mu?)
-            // Örn: "hücreler", "hücreyi", "hücreye" kelimeleri "hücre"yi tetikler
-            if (temizCumle.includes(standartSozlukKey)) {
-                if (!yakalananKelimeler.includes(sozlukKelimesi)) {
-                    bulunanSonuclar.push(OZEL_SOZLUK[sozlukKelimesi]);
-                    yakalananKelimeler.push(sozlukKelimesi.toUpperCase());
-                }
-                continue; // Yakalandıysa bir sonrakine geç
-            }
-
-            // 2. Harf Hata Toleransı Kontrolü (Kullanıcı harfi yanlış yazdıysa tolerans)
-            let cumleKelimeleri = temizCumle.split(" ");
-            for (let cKelime of cumleKelimeleri) {
-                if (cKelime.length >= 4 && standartSozlukKey.length >= 4) {
-                    let mesafe = getSimilarityScore(cKelime, standartSozlukKey);
-                    // Kelime uzunluğuna göre 1 veya 2 harf hatasını kabul et
-                    if (mesafe <= 1 || (standartSozlukKey.includes(cKelime) && cKelime.length >= 4)) {
-                        if (!yakalananKelimeler.includes(sozlukKelimesi)) {
-                            bulunanSonuclar.push(OZEL_SOZLUK[sozlukKelimesi]);
-                            yakalananKelimeler.push(sozlukKelimesi.toUpperCase());
-                        }
-                    }
-                }
-            }
-        }
-
-        // Eğer cümleden birden fazla kelime/konu yakalandıysa, hepsini alt alta birleştir!
-        if (bulunanSonuclar.length > 0) {
-            let baslik = yakalananKelimeler.join(" + ");
-            let birlesikCevap = `🧠 [İman Power Analiz Motoru]\n🤖 Sorduğun cümle içerisinden şu konuları tespit ettim: ${baslik}\n\n`;
-            birlesikCevap += bulunanSonuclar.join("\n\n----------------------------\n\n");
-            return birlesikCevap;
-        }
-
-        // Klasik Akıllı Soru Kalıpları Kontrolü
-        if (temizCumle.includes("nasil basarili") || temizCumle.includes("basari yolu") || temizCumle.includes("ders calismak")) {
-            return "🚀 Başarılı olmanın sırrı İman Power felsefesinde saklıdır: Hedef belirle, dikkat dağıtıcıları kapat, buradaki 7. sınıf özetlerini tekrar et ve her gün kararlılıkla çalış!";
-        }
-        if (temizCumle.includes("ne yapiyor") || temizCumle.includes("ne is yaparsin") || temizCumle.includes("gorevin ne")) {
-            return "⚙️ Şu an senin girdilerini kelime kelime analiz ediyor, cümlenin köklerini çözümlüyor ve Firebase veritabanını canlı tutuyorum.";
-        }
-        if (temizCumle.includes("kimsin") || temizCumle.includes("adin ne") || temizCumle.includes("sen kimsin")) {
-            return "🤖 Ben İman Power Zeka'yım. Çoklu istekleri ayırt edebilen profesyonel bir kod mimarisine sahibim!";
-        }
-
-        // Eğer hiçbir kelime eşleşmediyse üretilecek ultra esnek profesyonel yanıt
-        return `🤔 Cümleni ("${cumle}") kelime kelime taradım ancak veri tabanındaki 7. sınıf ders konuları veya etkileşim kelimeleriyle tam bir bağ kuramadım.\n\n💡 İpucu: Bana aynı anda birden fazla şey sorabilirsin! Örneğin: 'Bana rasyonel sayılar ve hücre konusunu anlat, üstüne bir de espri yap' yazarak beni test edebilirsin!`;
-    }
-
-    // EKRAN VE FIREBASE SİSTEMİ KONTROLLERİ
-    window.switchScreen = function(screenId) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('register-screen').style.display = 'none';
-        document.getElementById('chat-screen').style.display = 'none';
-        
-        const container = document.getElementById('main-container');
-        if(screenId === 'chat-screen') {
-            document.getElementById(screenId).style.display = 'flex';
-            container.style.maxWidth = "650px"; // Geniş cevaplar için ekranı büyüttük
-        } else {
-            document.getElementById(screenId).style.display = 'block';
-            container.style.maxWidth = "480px";
-        }
-    }
-
-    window.register = function() {
-        const user = document.getElementById('reg-username').value.trim().toLowerCase();
-        const pass = document.getElementById('reg-password').value;
-        if(!user || !pass) return alert("Boş alan bırakmayalım lütfen!");
-
-        const dbRef = ref(db);
-        get(child(dbRef, `users/${user}`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                alert("Bu kullanıcı adı alınmış.");
+        window.handleAuth = () => {
+            const username = document.getElementById('u-in').value.trim().toLowerCase();
+            const password = document.getElementById('p-in').value;
+            if(!username || !password) return alert("Boş bırakılamaz!");
+            if(isRegisterMode) {
+                set(ref(db, 'users/' + username), { password: password }).then(() => { alert("Kayıt başarılı!"); toggleAuthMode(); });
             } else {
-                set(ref(db, 'users/' + user), { password: pass, chatHistory: "" }).then(() => {
-                    alert("Profil başarıyla oluşturuldu.");
-                    switchScreen('login-screen');
+                onValue(ref(db, 'users/' + username), (snap) => {
+                    if(snap.exists() && snap.val().password === password) { user = username; document.getElementById('auth-screen').style.display = 'none'; }
+                    else alert("Hatalı Giriş!");
+                }, { onlyOnce: true });
+            }
+        };
+
+        window.verifyLSAdmin = () => {
+            if(document.getElementById('ls-adm-pass').value === "imanpoweradmini31") {
+                isLiveSupportAdmin = true;
+                document.getElementById('ls-admin-gate').style.display = 'none';
+                document.getElementById('ls-admin-badge').style.display = 'inline-block';
+                alert("Hoş geldin Başkan! Tüm destek kanalları açıldı.");
+            } else { alert("Hatalı Admin Şifresi!"); }
+        };
+
+        window.toggleModal = (show) => { document.getElementById('new-ticket-modal').style.display = show ? 'flex' : 'none'; };
+
+        window.createTicket = () => {
+            const name = document.getElementById('tk-name').value.trim();
+            const email = document.getElementById('tk-email').value.trim();
+            const phone = document.getElementById('tk-phone').value.trim();
+            const birth = document.getElementById('tk-birth').value;
+
+            if(!name || !email || !phone || !birth) return alert("Lütfen tüm alanları doldurun!");
+
+            onValue(ref(db, 'support_tickets'), (snap) => {
+                const count = snap.exists() ? Object.keys(snap.val()).length + 1 : 1;
+                const ticketKey = `Destek ${count}`;
+
+                set(ref(db, 'support_tickets/' + ticketKey), {
+                    label: ticketKey, name, email, phone, birth, creator: user, timestamp: Date.now()
+                }).then(() => {
+                    alert("Destek talebi başarıyla açıldı!");
+                    toggleModal(false);
+                });
+            }, { onlyOnce: true });
+        };
+
+        window.selectTicket = (id) => {
+            activeTicketId = id;
+            document.querySelectorAll('.ticket-item').forEach(el => el.classList.remove('active'));
+            const targetEl = document.getElementById('tk-item-' + id);
+            if(targetEl) targetEl.classList.add('active');
+            document.getElementById('active-ticket-header').innerText = `💬 AKTİF KANAL: ${id}`;
+
+            onValue(ref(db, 'support_chats/' + id), (snap) => {
+                if(activeTicketId !== id) return;
+                const msgBox = document.getElementById('support-chat-messages');
+                msgBox.innerHTML = "";
+                if(snap.exists()) {
+                    Object.values(snap.val()).forEach(msg => {
+                        const borderSide = msg.role === 'admin' ? '#3b82f6' : 'var(--accent)';
+                        msgBox.innerHTML += `<div class="msg" style="border-left-color: ${borderSide}"><b>${msg.sender}:</b> ${msg.text}</div>`;
+                    });
+                    msgBox.scrollTop = msgBox.scrollHeight;
+                }
+            });
+        };
+
+        window.sendTicketMessage = () => {
+            const input = document.getElementById('tk-msg-input');
+            const txt = input.value.trim();
+            if(!activeTicketId || !txt) return;
+
+            push(ref(db, 'support_chats/' + activeTicketId), {
+                sender: isLiveSupportAdmin ? "Başkan / Yönetici" : user,
+                text: txt,
+                role: isLiveSupportAdmin ? "admin" : "user",
+                timestamp: Date.now()
+            }).then(() => { input.value = ''; });
+        };
+
+        // REAL-TIME VERİ TABANI DİNLEME (SOL LİSTEYİ GÜNCELLEME)
+        onValue(ref(db, 'support_tickets'), (snap) => {
+            const tkContainer = document.getElementById('support-tickets-container');
+            tkContainer.innerHTML = "";
+            if(snap.exists()) {
+                Object.entries(snap.val()).forEach(([key, val]) => {
+                    // Admin değilse ve bilet başkasınaysa gösterme gizliliği
+                    if(!isLiveSupportAdmin && val.creator !== user) return;
+
+                    tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}" id="tk-item-${key}" onclick="selectTicket('${key}')">
+                        <div style="font-weight:900; color:var(--accent); font-family:'Orbitron'; font-size:0.85rem;">📌 ${key}</div>
+                        <div style="font-size:0.75rem; margin-top:4px;">İsim: ${val.name}</div>
+                        <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">Gmail: ${val.email}</div>
+                    </div>`;
                 });
             }
-        }).catch(err => alert("Kayıt Hatası: " + err.message));
-    }
-
-    window.login = function() {
-        const user = document.getElementById('login-username').value.trim().toLowerCase();
-        const pass = document.getElementById('login-password').value;
-        if(!user || !pass) return alert("Lütfen bilgileri girin.");
-
-        const dbRef = ref(db);
-        get(child(dbRef, `users/${user}`)).then((snapshot) => {
-            if (snapshot.exists() && snapshot.val().password === pass) {
-                currentUsername = user;
-                document.getElementById('welcome-user').innerText = `⚡ ${user.toUpperCase()}`;
-                switchScreen('chat-screen');
-                loadChatHistory();
-            } else {
-                alert("Hatalı giriş.");
-            }
-        }).catch(err => alert("Giriş Hatası: " + err.message));
-    }
-
-    function loadChatHistory() {
-        const chatBox = document.getElementById('chat-box');
-        chatBox.innerHTML = "";
-        const dbRef = ref(db);
-        get(child(dbRef, `users/${currentUsername}/chatHistory`)).then((snapshot) => {
-            if (snapshot.exists() && snapshot.val() !== "") {
-                const history = JSON.parse(snapshot.val());
-                history.forEach(msg => appendMessage(msg.text, msg.sender));
-            } else {
-                appendMessage("🔥 İman Power Pro Engine Devreye Girdi.\nArtık uzun cümleler kurabilir, aynı anda birden fazla konuyu (Örn: 'hücre ve tam sayılar anlat bi de saka yap') sorabilirsin. Hepsini anlarım!", "ai");
-            }
         });
-    }
-
-    function appendMessage(text, sender) {
-        const chatBox = document.getElementById('chat-box');
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('msg');
-        msgDiv.classList.add(sender === 'user' ? 'user-msg' : 'ai-msg');
-        msgDiv.innerText = text;
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    window.sendMessage = function() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if(!text) return;
-
-        appendMessage(text, 'user');
-        input.value = "";
-
-        setTimeout(() => {
-            let yapayZekaCevabi = akilliCevapMotoru(text);
-            appendMessage(yapayZekaCevabi, 'ai');
-            saveCurrentChat();
-        }, 500);
-    }
-
-    function saveCurrentChat() {
-        const chatBox = document.getElementById('chat-box');
-        const messages = [];
-        chatBox.querySelectorAll('.msg').forEach(msgDiv => {
-            const sender = msgDiv.classList.contains('user-msg') ? 'user' : 'ai';
-            messages.push({ text: msgDiv.innerText, sender: sender });
-        });
-        set(ref(db, `users/${currentUsername}/chatHistory`), JSON.stringify(messages));
-    }
-
-    window.logout = function() {
-        currentUsername = "";
-        switchScreen('login-screen');
-    }
-</script>
+    </script>
 </body>
 </html>
