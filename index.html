@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İman Power FC | 7/24 Canlı Destek Merkezi</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript" src=\"https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js\"></script>
     <style>
         :root {
             --bg: #020617;
@@ -22,74 +22,61 @@
         /* --- GİRİŞ EKRANI --- */
         #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .auth-card { background: var(--glass); padding: 40px; border-radius: 30px; border: 2px solid var(--accent); text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 40px var(--accent-glow); }
-        .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; object-fit: cover; }
+        .auth-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 20px; }
 
-        /* --- ÜST PANEL --- */
-        .top-bar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; height: 70px; flex-shrink: 0; z-index: 999; }
-        .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
-        .logo-box img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; }
-
-        /* --- 3 BÖLÜMLÜ DÜZEN (MASAÜSTÜ) --- */
-        .main-layout { display: grid; grid-template-columns: 320px 1fr 380px; height: calc(100vh - 70px); background: #0b1329; overflow: hidden; width: 100%; }
-
-        /* SOL: DESTEK TALEPLERİ LİSTESİ */
-        .sidebar { background: #0f172a; border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; height: 100%; overflow-y: auto; }
-        .ticket-item { padding: 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; cursor: pointer; transition: 0.2s; position: relative; }
-        .ticket-item:hover, .ticket-item.active { border-color: var(--accent); background: rgba(16, 185, 129, 0.1); }
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; border: none; padding: 4px 8px; font-size: 0.65rem; border-radius: 6px; font-weight: bold; cursor: pointer; z-index: 10; display: none; }
-        .delete-btn:hover { background: #b91c1c; }
-
-        /* ORTA: CHAT ALANI */
-        .chat-container { display: flex; flex-direction: column; background: #090f20; border-right: 1px solid var(--border); height: 100%; overflow: hidden; }
-        .chat-header { padding: 20px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-weight: bold; color: var(--accent); }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { background: rgba(255,255,255,0.04); padding: 12px 18px; border-radius: 16px; border-left: 4px solid var(--accent); max-width: 85%; line-height: 1.5; word-wrap: break-word; }
-
-        /* SAĞ: ENTEGRE DİNAMİK LINK PENCERESİ */
-        .web-pane { background: #0f172a; padding: 20px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-
-        /* --- FORMLAR VE ELEMANLAR --- */
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #1e293b; background: #020617; color: white; }
-        .btn { padding: 14px; border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; background: var(--accent); width: 100%; transition: 0.3s; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #1e293b; background: #0f172a; color: white; font-size: 1rem; }
+        .btn { padding: 14px; border: none; border-radius: 10px; color: white; font-weight: 800; cursor: pointer; background: var(--accent); width: 100%; transition: 0.3s; text-transform: uppercase; font-size: 1rem; }
         .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px var(--accent-glow); }
-        
-        .modal { display: none; background: rgba(0,0,0,0.8); position: fixed; inset: 0; z-index: 20000; align-items: center; justify-content: center; }
-        .modal-card { background: var(--glass); border: 2px solid var(--accent); padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; }
 
-        /* ==========================================================
-           📱 TELEFON VE MOBİL UYUMLULUK AYARLARI (RESPONSIVE)
-           ========================================================== */
-        @media (max-width: 1024px) {
-            body { overflow-y: auto; height: auto; } /* Mobilde tüm sayfa aşağı kayabilsin */
-            .main-layout {
-                display: flex;
-                flex-direction: column; /* Yan yana olan grid düzenini alt alta çevirir */
-                height: auto;
-                overflow: visible;
-            }
-            .top-bar {
-                flex-direction: column;
-                height: auto;
-                gap: 15px;
-                padding: 15px;
-                text-align: center;
-            }
-            .sidebar, .chat-container, .web-pane {
-                width: 100%;
-                height: 500px; /* Her bölüme telefonda rahat görünsün diye sabit boy verdik */
-                border-right: none;
-                border-bottom: 2px solid var(--border);
-            }
-            .chat-messages {
-                padding: 15px;
-            }
-            .auth-card {
-                padding: 25px;
-                width: 95%;
-            }
-            #ls-admin-gate input {
-                width: 120px !important;
-            }
+        /* --- ANA DESTEK PANELİ DÜZENİ --- */
+        header { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .logo-box { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
+        .logo-box img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
+
+        .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
+        
+        /* SOL TARAF: TICKET LİSTESİ VE FORM */
+        .sidebar { width: 350px; border-right: 1px solid var(--border); background: rgba(15, 23, 42, 0.4); display: flex; flex-direction: column; }
+        .ticket-form-box { padding: 20px; border-bottom: 1px solid var(--border); background: rgba(2, 6, 23, 0.5); }
+        .ticket-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .ticket-item { background: var(--glass); padding: 15px; border-radius: 15px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .ticket-item:hover, .ticket-item.active { border-color: var(--accent); background: rgba(16, 185, 129, 0.05); }
+        .ticket-item .delete-btn { position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: none; }
+
+        /* SAĞ TARAF: SOHBET ODASI */
+        .chat-container { flex: 1; display: flex; flex-direction: column; background: #070f24; position: relative; }
+        .chat-header { padding: 20px; background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid var(--border); font-family: 'Orbitron'; font-weight: 900; color: var(--accent); }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .msg-row { display: flex; width: 100%; }
+        .msg-row.user-msg { justify-content: flex-end; }
+        .msg-row.admin-msg { justify-content: flex-start; }
+        
+        .msg-bubble { max-width: 70%; padding: 12px 18px; border-radius: 20px; line-height: 1.5; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; }
+        .msg-row.user-msg .msg-bubble { background: var(--accent); color: #000; border-bottom-right-radius: 4px; font-weight: 600; }
+        .msg-row.admin-msg .msg-bubble { background: #1e293b; color: #f8fafc; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .msg-info { font-size: 0.68rem; margin-top: 5px; opacity: 0.6; display: block; text-align: right; }
+        .msg-row.admin-msg .msg-info { text-align: left; color: #94a3b8; }
+
+        .chat-input-area { padding: 20px; background: rgba(2, 6, 23, 0.8); border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+        
+        /* ADMİN GİRİŞ KİLİDİ BUTONU */
+        .admin-lock-badge { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; cursor: pointer; font-weight: 600; color: #64748b; }
+        .admin-lock-badge:hover { color: #ef4444; border-color: #ef4444; }
+
+        /* MOBİL RESPONSIVE DÜZEN */
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; height: 260px; border-right: none; border-bottom: 2px solid var(--border); }
+            .ticket-form-box { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+            .ticket-form-box input, .ticket-form-box button { margin-bottom: 0; padding: 10px; font-size: 0.85rem; }
+            .ticket-form-box button { grid-column: span 2; }
+            .chat-header { padding: 12px; font-size: 0.9rem; }
+            .chat-messages { padding: 15px; }
+            .msg-bubble { max-width: 85%; font-size: 0.88rem; padding: 10px 14px; }
+            .chat-input-area { padding: 12px; }
         }
     </style>
 </head>
@@ -97,83 +84,54 @@
 
     <div id="auth-screen">
         <div class="auth-card">
-            <img src="https://0imanpower0.github.io/ImanPower/logo.png" alt="Logo">
+            <img src="logo.png" alt="Logo" onerror="this.src='https://0imanpower0.github.io/ImanPower1/logo.png'">
             <h2 id="auth-title" style="margin-bottom:20px; font-family:'Orbitron'; color:var(--accent); letter-spacing: 2px;">DESTEK GİRİŞİ</h2>
             <input type="text" id="u-in" placeholder="Kullanıcı Adı">
             <input type="password" id="p-in" placeholder="Şifre">
-            <button class="btn" id="auth-btn" onclick="handleAuth()">GİRİŞ YAP</button>
-            <p id="toggle-auth-text" style="margin-top:20px; font-size:0.85rem; cursor:pointer; color:var(--accent);" onclick="toggleAuthMode()">Hesabın yok mu? Kayıt Ol</p>
+            <button class="btn" id="auth-btn" onclick="handleAuth()">GİRİŞ YAP / KAYIT OL</button>
+            <p style="margin-top:15px; font-size:0.75rem; color:#64748b;">Hesabınız yoksa otomatik oluşturulur.</p>
         </div>
     </div>
 
-    <div class="top-bar">
-        <div class="logo-box"><img src="https://0imanpower0.github.io/ImanPower/logo.png"> <span>İMAN POWER CANLI DESTEK</span></div>
-        
-        <div id="ls-admin-gate" style="display:flex; gap:10px; align-items:center;">
-            <input type="password" id="ls-adm-pass" placeholder="Admin Key" style="width:160px; margin:0; padding:8px;">
-            <button class="btn" style="width:100px; padding:8px; background:#3b82f6;" onclick="verifyLSAdmin()">ADMİN GİRİŞ</button>
+    <header>
+        <div class="logo-box">
+            <img src="logo.png" onerror="this.src='https://0imanpower0.github.io/ImanPower1/logo.png'">
+            <span>İMAN POWER DESTEK</span>
         </div>
-        
-        <div id="ls-admin-badge" style="display:none; align-items:center; gap:15px;">
-            <span style="color:#38bdf8; font-weight:bold; font-family:'Orbitron';">🛠️ YÖNETİCİ MODU</span>
-            <button class="btn" style="background:#ef4444; padding:6px 12px; font-size:0.75rem; width:auto;" onclick="logoutLSAdmin()">ÇIKIŞ YAP</button>
-        </div>
-    </div>
+        <div id="adm-badge-area" class="admin-lock-badge" onclick="promptAdminKey()">🔒 YETKİLİ GİRİŞİ</div>
+    </header>
 
-    <div class="main-layout">
+    <div class="main-container">
         
         <div class="sidebar">
-            <button class="btn" style="background:#2563eb;" onclick="toggleModal(true)">➕ YENİ DESTEK AÇ</button>
-            <div id="support-tickets-container" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>
+            <div class="ticket-form-box">
+                <h4 style="font-family:'Orbitron'; font-size:0.8rem; color:var(--accent); margin-bottom:10px; letter-spacing:1px;">YENİ DESTEK ODASI</h4>
+                <input type="text" id="tk-name" placeholder="Adınız Soyadınız">
+                <input type="email" id="tk-email" placeholder="E-posta Adresiniz">
+                <button class="btn" style="padding:10px; font-size:0.85rem;" onclick="createNewTicket()">DESTEK ODASI AÇ</button>
+            </div>
+            <div id="support-tickets-container" class="ticket-list">
+                </div>
         </div>
 
         <div class="chat-container">
-            <div id="active-ticket-header" class="chat-header">Lütfen soldan bir destek odası seçin.</div>
-            <div id="support-chat-messages" class="chat-messages"></div>
-            <div style="display:flex; padding:20px; gap:10px; background:rgba(0,0,0,0.3); border-top:1px solid var(--border);">
-                <input type="text" id="tk-msg-input" placeholder="Mesajınızı buraya yazın..." style="margin:0;">
-                <button class="btn" style="width:130px;" onclick="sendTicketMessage()">GÖNDER</button>
-            </div>
-        </div>
-
-        <div class="web-pane">
-            <h3 style="font-family:'Orbitron'; color:var(--accent); font-size:1rem; margin-bottom:10px; text-align:center;">BAĞLANTI PENCERESİ</h3>
-            
-            <div id="admin-link-manager" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px; display:none;">
-                <input type="text" id="pane-custom-url" placeholder="Açılacak Linki Yapıştır (Mülakat, Form vb.)" style="margin-bottom:8px; font-size:0.8rem; padding:8px;">
-                <button class="btn" style="background:#3b82f6; padding:8px; font-size:0.8rem;" onclick="updatePaneURL()">LİNKİ GÜNCELLE</button>
-            </div>
-
-            <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
-                <div id="pane-security-notice" style="font-size:0.75rem; color:#94a3b8; text-align:center; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); padding:8px; border-radius:8px; display:none;">
-                    ⚠️ Google servisleri (Meet/Form) güvenlik nedeniyle bu pencerede açılmaz. Lütfen aşağıdaki mavi butona basarak yeni sekmede açın!
+            <div id="active-chat-header" class="chat-header">🎧 LÜTFEN BİR DESTEK ODASI SEÇİN VEYA YENİ BİR ODA AÇIN</div>
+            <div id="chat-messages-box" class="chat-messages">
                 </div>
-                <iframe id="live-pane-frame" src="about:blank" style="width:100%; flex:1; border:none; border-radius:12px; background:#0f172a;"></iframe>
-                <a id="pane-direct-link" href="#" target="_blank" class="btn" style="background:#3b82f6; font-size:0.8rem; padding:12px; text-align:center; display:none; text-decoration:none;">LİNKİ YENİ SEKMEDE AÇ 🚀</a>
+            <div class="chat-input-area">
+                <input type="text" id="chat-msg-input" placeholder="Mesajınızı buraya yazın..." style="margin:0;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button class="btn" style="width:120px; padding:12px;" onclick="sendChatMessage()">GÖNDER</button>
             </div>
         </div>
 
-    </div>
-
-    <div id="new-ticket-modal" class="modal">
-        <div class="modal-card">
-            <h3 style="font-family:'Orbitron'; color:#fbbf24; margin-bottom:15px;">Yeni Destek Talebi</h3>
-            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:15px;">İşlemlerinizin hızlı çözülmesi için bilgileri doğru girmeniz zorunludur.</p>
-            <input type="text" id="tk-name" placeholder="Adınız Soyadınız">
-            <input type="email" id="tk-email" placeholder="Gmail Adresiniz">
-            <input type="text" id="tk-phone" placeholder="Telefon Numaranız">
-            <label style="font-size:0.75rem; color:#94a3b8; display:block; margin-bottom:5px;">Doğum Tarihi:</label>
-            <input type="date" id="tk-birth">
-            <button class="btn" style="background:#10b981; margin-top:10px;" onclick="createTicket()">TALEBİ OLUŞTUR VE GÖNDER</button>
-            <button class="btn" style="background:#ef4444; margin-top:5px;" onclick="toggleModal(false)">İPTAL</button>
-        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, remove, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        try { emailjs.init("jRukwmEqAxg2KHhxg"); } catch(e){}
+        // EmailJS Kurulumu
+        emailjs.init("VlXfX0xIInWfT587I");
 
         const firebaseConfig = {
             apiKey: "AIzaSyDy4ZUv_wZsntWSIDbcOlvpqDTBvWuSdrk",
@@ -188,213 +146,195 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let user = ""; let isRegisterMode = false;
-        let activeTicketId = ""; let isLiveSupportAdmin = false;
+        let user = "";
+        let isLiveSupportAdmin = false;
+        let activeTicketId = null;
+        let activeChatListener = null;
 
-        window.toggleAuthMode = () => {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('auth-title').innerText = isRegisterMode ? "SİSTEME KAYIT" : "DESTEK GİRİŞİ";
-            document.getElementById('auth-btn').innerText = isRegisterMode ? "KAYIT OL" : "GİRİŞ YAP";
-            document.getElementById('toggle-auth-text').innerText = isRegisterMode ? "Zaten hesabın var mı? Giriş Yap" : "Hesabın yok mu? Kayıt Ol";
-        };
-
+        // AUTH ENGINE
         window.handleAuth = () => {
             const username = document.getElementById('u-in').value.trim().toLowerCase();
             const password = document.getElementById('p-in').value;
-            if(!username || !password) return alert("Boş bırakılamaz!");
-            if(isRegisterMode) {
-                set(ref(db, 'users/' + username), { password: password }).then(() => { alert("Kayıt başarılı!"); toggleAuthMode(); });
-            } else {
-                onValue(ref(db, 'users/' + username), (snap) => {
-                    if(snap.exists() && snap.val().password === password) { 
-                        user = username; 
-                        document.getElementById('auth-screen').style.display = 'none'; 
-                        refreshTicketList();
+            if(!username || !password) return alert("Kullanıcı adı ve şifre zorunlu!");
+
+            onValue(ref(db, 'users/' + username), (snap) => {
+                if(snap.exists()) {
+                    if(snap.val().password === password) {
+                        loginSuccess(username);
+                    } else {
+                        alert("Hatalı şifre!");
                     }
-                    else alert("Hatalı Giriş!");
-                }, { onlyOnce: true });
-            }
+                } else {
+                    set(ref(db, 'users/' + username), { password: password }).then(() => {
+                        loginSuccess(username);
+                    });
+                }
+            }, { onlyOnce: true });
         };
 
-        window.verifyLSAdmin = () => {
-            if(document.getElementById('ls-adm-pass').value === "imanpoweradmini31") {
-                isLiveSupportAdmin = true;
-                document.getElementById('ls-admin-gate').style.display = 'none';
-                document.getElementById('ls-admin-badge').style.display = 'flex';
-                document.getElementById('admin-link-manager').style.display = 'block';
-                document.getElementById('ls-adm-pass').value = "";
-                alert("Hoş geldin Başkan! Yönetici modu aktif.");
-                refreshTicketList();
-            } else { alert("Hatalı Admin Şifresi!"); }
-        };
-
-        window.logoutLSAdmin = () => {
-            isLiveSupportAdmin = false;
-            document.getElementById('ls-admin-badge').style.display = 'none';
-            document.getElementById('admin-link-manager').style.display = 'none';
-            document.getElementById('ls-admin-gate').style.display = 'flex';
-            alert("Yönetici modundan çıkış yapıldı.");
-            activeTicketId = "";
-            document.getElementById('active-ticket-header').innerText = "Lütfen soldan bir destek odası seçin.";
-            document.getElementById('support-chat-messages').innerHTML = "";
+        function loginSuccess(username) {
+            user = username;
+            document.getElementById('auth-screen').style.display = 'none';
             refreshTicketList();
+        }
+
+        // ADMIN ENGINE
+        window.promptAdminKey = () => {
+            const key = prompt("Yetkili Giriş Şifresini Girin:");
+            if(key === "imanpower2026") {
+                isLiveSupportAdmin = true;
+                document.getElementById('adm-badge-area').innerText = "⚡ YETKİLİ MODU AKTİF";
+                document.getElementById('adm-badge-area').style.borderColor = "#10b981";
+                document.getElementById('adm-badge-area').style.color = "#10b981";
+                alert("Yönetici girişi onaylandı. Tüm odaları görebilir ve silebilirsiniz.");
+                refreshTicketList();
+            } else {
+                alert("Hatalı şifre!");
+            }
         };
 
-        window.toggleModal = (show) => { document.getElementById('new-ticket-modal').style.display = show ? 'flex' : 'none'; };
+        // YENİ BENZERSİZ ODA AÇMA MOTORU (TRANSACTION KULLANILARAK GERİ SAYMAYAN SAYAÇ SİSTEMİ)
+        window.createNewTicket = () => {
+            const name = document.getElementById('tk-name').value.trim();
+            const email = document.getElementById('tk-email').value.trim();
 
-        window.updatePaneURL = () => {
-            let url = document.getElementById('pane-custom-url').value.trim();
-            if(!url) return alert("Lütfen geçerli bir link girin!");
-            if(!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "https://" + url;
-            }
-            set(ref(db, 'panes/current_url'), url).then(() => {
-                alert("Sağ panel linki tüm kullanıcılar için güncellendi!");
-                document.getElementById('pane-custom-url').value = "";
+            if(!name || !email) return alert("Lütfen adınızı ve e-postanızı doldurun!");
+
+            // Firebase Transaction kullanarak veritabanındaki global sayacı 1 artırıyoruz.
+            // Bu sayede eski odalar silinse bile sayaç daima ileri gider, çakışma tamamen önlenir.
+            const counterRef = ref(db, 'support_ticket_counter');
+            
+            runTransaction(counterRef, (currentValue) => {
+                // Eğer daha önce hiç sayaç yoksa 1'den başlat, varsa mevcut değeri 1 artır
+                return (currentValue || 0) + 1;
+            }).then((result) => {
+                if (result.committed) {
+                    const ticketNumber = result.snapshot.val();
+                    const newTicketId = "Destek " + ticketNumber; // Örn: "Destek 9"
+
+                    const ticketPayload = {
+                        name: name,
+                        email: email,
+                        creator: user,
+                        timestamp: Date.now()
+                    };
+
+                    set(ref(db, 'support_tickets/' + newTicketId), ticketPayload).then(() => {
+                        // EmailJS ile adminlere bildirim maili gönderimi
+                        emailjs.send("service_ep2or69", "template_uivftia", {
+                            ticket_id: newTicketId,
+                            user_name: name,
+                            user_email: email,
+                            reply_to: "imanpowerfc@gmail.com"
+                        }).then(() => {
+                            console.log("Bildirim maili başarıyla gönderildi.");
+                        }).catch((err) => console.log("Mail gönderim hatası:", err));
+
+                        document.getElementById('tk-name').value = "";
+                        document.getElementById('tk-email').value = "";
+                        
+                        // Otomatik olarak yeni açılan odaya geçiş yap
+                        selectTicket(newTicketId);
+                    });
+                }
+            }).catch((error) => {
+                alert("Oda oluşturulurken bir hata meydana geldi: " + error.message);
             });
         };
 
-        onValue(ref(db, 'panes/current_url'), (snap) => {
-            const frame = document.getElementById('live-pane-frame');
-            const directBtn = document.getElementById('pane-direct-link');
-            const notice = document.getElementById('pane-security-notice');
+        // SEÇİLİ ODANIN SOHBETİNİ YÜKLEME
+        window.selectTicket = (ticketId) => {
+            activeTicketId = ticketId;
             
-            if(snap.exists() && snap.val() !== "") {
-                const targetUrl = snap.val();
-                directBtn.href = targetUrl;
-                directBtn.style.display = 'block';
+            document.querySelectorAll('.ticket-item').forEach(el => el.classList.remove('active'));
+            const currentItem = document.getElementById(`tk-item-${ticketId}`);
+            if(currentItem) currentItem.classList.add('active');
 
-                if(targetUrl.includes("google.com")) {
-                    frame.style.display = 'none';
-                    notice.style.display = 'block';
-                } else {
-                    frame.src = targetUrl;
-                    frame.style.display = 'block';
-                    notice.style.display = 'none';
-                }
-            } else {
-                frame.src = "about:blank";
-                frame.style.display = 'block';
-                directBtn.style.display = 'none';
-                notice.style.display = 'none';
-            }
-        });
+            document.getElementById('active-chat-header').innerText = `💬 ODADASINIZ: ${ticketId.toUpperCase()}`;
 
-        window.deleteTicket = (ticketId, event) => {
-            event.stopPropagation();
-            if(!isLiveSupportAdmin) return;
-            if(confirm(`${ticketId} talebini ve tüm mesaj geçmişini kalıcı olarak silmek istiyor musunuz?`)) {
-                remove(ref(db, 'support_tickets/' + ticketId)).then(() => {
-                    remove(ref(db, 'support_chats/' + ticketId)).then(() => {
-                        alert("Destek talebi başarıyla silindi!");
-                        if(activeTicketId === ticketId) {
-                            activeTicketId = "";
-                            document.getElementById('active-ticket-header').innerText = "Lütfen soldan bir destek odası seçin.";
-                            document.getElementById('support-chat-messages').innerHTML = "";
-                        }
+            // Eski listener'ı temizle
+            if(activeChatListener) { activeChatListener(); }
+
+            const chatRef = ref(db, `support_chats/${ticketId}`);
+            activeChatListener = onValue(chatRef, (snap) => {
+                const msgBox = document.getElementById('chat-messages-box');
+                msgBox.innerHTML = "";
+                
+                if(snap.exists()) {
+                    Object.values(snap.val()).forEach(m => {
+                        const isAdmin = m.role === 'admin';
+                        const rowClass = isAdmin ? 'admin-msg' : 'user-msg';
+                        
+                        msgBox.innerHTML += `<div class="msg-row ${rowClass}">
+                            <div class="msg-bubble">
+                                <b style="font-size:0.75rem; display:block; margin-bottom:2px; color: ${isAdmin ? '#38bdf8' : '#020617'}">${m.sender.toUpperCase()}</b>
+                                ${m.message}
+                                <span class="msg-info">${m.time}</span>
+                            </div>
+                        </div>`;
                     });
+                    msgBox.scrollTop = msgBox.scrollHeight;
+                } else {
+                    msgBox.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b; font-size:0.9rem;">Oda başarıyla açıldı. Yetkililerle görüşmek için ilk mesajınızı yazabilirsiniz.</div>`;
+                }
+            });
+        };
+
+        // MESAJ GÖNDERME MOTORU
+        window.sendChatMessage = () => {
+            const text = document.getElementById('chat-msg-input').value.trim();
+            if(!text || !activeTicketId) return;
+
+            const timeString = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const newMsgRef = push(ref(db, `support_chats/${activeTicketId}`));
+            
+            set(newMsgRef, {
+                sender: user,
+                message: text,
+                time: timeString,
+                role: isLiveSupportAdmin ? 'admin' : 'user',
+                timestamp: Date.now()
+            }).then(() => {
+                document.getElementById('chat-msg-input').value = "";
+            });
+        };
+
+        // BİLET SİLME MOTORU (Sadece admin silebilir)
+        window.deleteTicket = (ticketId, event) => {
+            event.stopPropagation(); // Üzerine tıklayıp odayı seçmesin diye engelle
+            if(!isLiveSupportAdmin) return;
+
+            if(confirm(`${ticketId} odasını ve tüm mesaj geçmişini tamamen silmek istiyor musunuz?`)) {
+                remove(ref(db, `support_tickets/${ticketId}`)).then(() => {
+                    remove(ref(db, `support_chats/${ticketId}`));
+                    if(activeTicketId === ticketId) {
+                        activeTicketId = null;
+                        document.getElementById('chat-messages-box').innerHTML = "";
+                        document.getElementById('active-chat-header').innerText = "🎧 LÜTFEN BİR DESTEK ODASI SEÇİN VEYA YENİ BİR ODA AÇIN";
+                    }
+                    alert("Oda ve geçmiş başarıyla temizlendi.");
                 });
             }
         };
 
-        window.createTicket = () => {
-            const name = document.getElementById('tk-name').value.trim();
-            const email = document.getElementById('tk-email').value.trim();
-            const phone = document.getElementById('tk-phone').value.trim();
-            const birth = document.getElementById('tk-birth').value;
-
-            if(!name || !email || !phone || !birth) return alert("Lütfen tüm alanları doldurun!");
-
-            onValue(ref(db, 'cooldowns/' + user), (cooldownSnap) => {
-                const now = Date.now();
-                if(cooldownSnap.exists()) {
-                    const lastTime = cooldownSnap.val().last_ticket_time;
-                    const diffMs = now - lastTime;
-                    const oneHourMs = 60 * 60 * 1000;
-
-                    if(diffMs < oneHourMs) {
-                        const remainingMin = Math.ceil((oneHourMs - diffMs) / (60 * 1000));
-                        alert(`Hata: Saatte sadece 1 kez destek talebi açabilirsiniz! Tekrar açabilmek için ${remainingMin} dakika beklemelisiniz.`);
-                        return;
-                    }
-                }
-
-                onValue(ref(db, 'support_tickets'), (snap) => {
-                    const count = snap.exists() ? Object.keys(snap.val()).length + 1 : 1;
-                    const ticketKey = `Destek ${count}`;
-
-                    set(ref(db, 'support_tickets/' + ticketKey), {
-                        label: ticketKey, name, email, phone, birth, creator: user, timestamp: now
-                    }).then(() => {
-                        set(ref(db, 'cooldowns/' + user), { last_ticket_time: now });
-                        alert("Destek talebi başarıyla açıldı!");
-                        
-                        try {
-                            emailjs.send("service_f49eoyn", "template_d9njsw1", {
-                                ticket_id: ticketKey,
-                                user_name: name,
-                                user_email: email,
-                                user_phone: phone,
-                                user_birth: birth
-                            });
-                        } catch(e) { console.log(e); }
-
-                        toggleModal(false);
-                    });
-                }, { onlyOnce: true });
-
-            }, { onlyOnce: true });
-        };
-
-        window.selectTicket = (id) => {
-            activeTicketId = id;
-            document.querySelectorAll('.ticket-item').forEach(el => el.classList.remove('active'));
-            const targetEl = document.getElementById('tk-item-' + id);
-            if(targetEl) targetEl.classList.add('active');
-            document.getElementById('active-ticket-header').innerText = `💬 AKTİF KANAL: ${id}`;
-
-            onValue(ref(db, 'support_chats/' + id), (snap) => {
-                if(activeTicketId !== id) return;
-                const msgBox = document.getElementById('support-chat-messages');
-                msgBox.innerHTML = "";
-                if(snap.exists()) {
-                    Object.values(snap.val()).forEach(msg => {
-                        const borderSide = msg.role === 'admin' ? '#3b82f6' : 'var(--accent)';
-                        msgBox.innerHTML += `<div class="msg" style="border-left-color: ${borderSide}"><b>${msg.sender}:</b> ${msg.text}</div>`;
-                    });
-                    msgBox.scrollTop = msgBox.scrollHeight;
-                }
-            });
-        };
-
-        window.sendTicketMessage = () => {
-            const input = document.getElementById('tk-msg-input');
-            const txt = input.value.trim();
-            if(!activeTicketId || !txt) return;
-
-            push(ref(db, 'support_chats/' + activeTicketId), {
-                sender: isLiveSupportAdmin ? "Başkan / Yönetici" : user,
-                text: txt,
-                role: isLiveSupportAdmin ? "admin" : "user",
-                timestamp: Date.now()
-            }).then(() => { input.value = ''; });
-        };
-
+        // SOL LİSTEYİ ANLIK GÜNCELLEME SİSTEMİ
         function refreshTicketList() {
             onValue(ref(db, 'support_tickets'), (snap) => {
                 const tkContainer = document.getElementById('support-tickets-container');
                 tkContainer.innerHTML = "";
                 if(snap.exists()) {
                     Object.entries(snap.val()).forEach(([key, val]) => {
+                        // Admin değilse ve biletin sahibi kendisi değilse listeleme
                         if(!isLiveSupportAdmin && val.creator !== user) return;
 
-                        tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}" id="tk-item-${key}" onclick="selectTicket('${key}')">
+                        tkContainer.innerHTML += `<div class="ticket-item ${activeTicketId === key ? 'active' : ''}\" id="tk-item-${key}" onclick="selectTicket('${key}')">
                             <button class="delete-btn" id="del-btn-${key}" onclick="deleteTicket('${key}', event)">❌ SİL</button>
                             <div style="font-weight:900; color:var(--accent); font-family:'Orbitron'; font-size:0.85rem;">📌 ${key}</div>
                             <div style="font-size:0.75rem; margin-top:4px;">İsim: ${val.name}</div>
                             <div style="font-size:0.65rem; color:#64748b; margin-top:2px;">Gmail: ${val.email}</div>
                         </div>`;
 
+                        // Admin giriş yapmışsa silme butonlarını görünür yap
                         if(isLiveSupportAdmin) {
                             setTimeout(() => {
                                 const dBtn = document.getElementById(`del-btn-${key}`);
